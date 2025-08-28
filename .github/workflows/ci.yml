@@ -15,7 +15,7 @@ jobs:
       with:
         submodules: 'recursive'
     - uses: astral-sh/ruff-action@v3
-    - uses: flatpak/flatpak-github-actions/flatpak-builder@v6
+    - uses: flatpak/flatpak-github-actions/flatpak-builder@v6.5
       with:
         bundle: pyrose.flatpak
         manifest-path: io.github.vanillajonathan.pyrose.json
