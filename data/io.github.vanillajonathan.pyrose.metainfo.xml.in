@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>io.github.vanillajonathan.pyrose</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>MIT</project_license>
+
+  <name>PyRose</name>
+  <summary>Playground for programmers</summary>
+  <description>
+    <p>Lets you quickly and conveniently run a little piece of code without having to create any files or set anything up.</p>
+    <p>Supports Python, Perl, JavaScript and Ruby.</p>
+  </description>
+
+  <developer id="io.github.vanillajonathan">
+    <name>Jonathan</name>
+  </developer>
+
+  <url type="homepage">https://github.com/vanillajonathan/pyrose</url>
+  <url type="vcs-browser">https://github.com/vanillajonathan/pyrose</url>
+  <url type="bugtracker">https://github.com/vanillajonathan/pyrose/issues</url>
+
+  <translation type="gettext">pyrose</translation>
+  <launchable type="desktop-id">io.github.vanillajonathan.pyrose.desktop</launchable>
+  <content_rating type="oars-1.1" />
+
+  <branding>
+    <color type="primary" scheme_preference="light">#dc8add</color>
+    <color type="primary" scheme_preference="dark">#613583</color>
+  </branding>
+
+  <screenshots>
+    <screenshot type="default">
+      <image>https://raw.githubusercontent.com/vanillajonathan/pyrose/refs/heads/main/screenshot-light.png</image>
+      <caption>A caption</caption>
+    </screenshot>
+    <screenshot environment="gnome:dark">
+      <image>https://raw.githubusercontent.com/vanillajonathan/pyrose/refs/heads/main/screenshot-dark.png</image>
+      <caption>A caption</caption>
+    </screenshot>
+  </screenshots>
+
+  <keywords>
+    <keyword translate="no">python</keyword>
+    <keyword translate="no">ide</keyword>
+    <keyword>code</keyword>
+    <keyword>compiler</keyword>
+    <keyword>interpreter</keyword>
+    <keyword>development</keyword>
+    <keyword>programming</keyword>
+  </keywords>
+
+  <recommends>
+    <control>keyboard</control>
+  </recommends>
+
+  <releases>
+    <release version="1.0.0" date="2025-08-28">
+      <description translate="no">
+        <p>Initial release of PyRose!</p>
+      </description>
+    </release>
+  </releases>
+
+</component>

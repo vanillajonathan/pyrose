@@ -1,0 +1,18 @@
+using Gtk 4.0;
+
+template $SymbolChooser: Popover {
+  child: ScrolledWindow {
+    vexpand: true;
+    hscrollbar-policy: never;
+    propagate-natural-height: true;
+    max-content-height: 320;
+
+    child: FlowBox symbols {
+      homogeneous: true;
+      min-children-per-line: 7;
+      selection-mode: none;
+      child-activated => $on_symbol_activated();
+      keynav-failed => $on_keynav_failed();
+    };
+  };
+}

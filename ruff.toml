@@ -1,0 +1,6 @@
+target-version = "py312"  # Flatpak runtime: org.gnome.Platform 48
+
+[lint]
+extend-select = [
+  "UP",  # pyupgrade
+]

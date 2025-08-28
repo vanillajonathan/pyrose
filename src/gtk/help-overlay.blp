@@ -1,0 +1,57 @@
+using Gtk 4.0;
+
+ShortcutsWindow help_overlay {
+  modal: true;
+
+  ShortcutsSection {
+    section-name: "shortcuts";
+    max-height: 10;
+
+    ShortcutsGroup {
+      title: C_("shortcut window", "General");
+
+      ShortcutsShortcut {
+        title: C_("shortcut window", "Show Shortcuts");
+        action-name: "win.show-help-overlay";
+      }
+
+      ShortcutsShortcut {
+        title: C_("shortcut window", "Quit");
+        action-name: "app.quit";
+      }
+
+      ShortcutsShortcut {
+        title: C_("shortcut window", "Run code");
+        action-name: "win.run";
+      }
+
+      ShortcutsShortcut {
+        title: C_("shortcut window", "Stop run code");
+        action-name: "win.stop";
+      }
+    }
+
+    ShortcutsGroup {
+      title: C_("shortcut window", "Editor");
+
+      ShortcutsShortcut {
+        title: C_("shortcut window", "Find");
+        action-name: "editor.show-search";
+      }
+
+      ShortcutsShortcut {
+        title: C_("shortcut window", "Go to line");
+        action-name: "editor.show-goto-line";
+      }
+    }
+
+    ShortcutsGroup {
+      title: C_("shortcut window", "Terminal");
+
+      ShortcutsShortcut {
+        title: C_("shortcut window", "Find");
+        action-name: "terminal.show-search";
+      }
+    }
+  }
+}

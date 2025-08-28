@@ -1,0 +1,66 @@
+<page xmlns="http://projectmallard.org/1.0/" type="guide" id="javascript">
+
+  <info>
+    <link type="guide" xref="index#languages"/>
+  </info>
+
+  <title>JavaScript</title>
+  <p><link href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide">JavaScript guide</link></p>
+  <p><link href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference">JavaScript reference</link></p>
+
+  <section>
+    <title>Console</title>
+    <p>Printing to the console</p>
+    <code mime="application/javascript">
+console.log("Hello world!")</code>
+  </section>
+
+  <section>
+    <title>Loops</title>
+    <p>Loop over a list.</p>
+    <code mime="application/javascript">
+let fruits = ["apple", "banana"]
+
+for (const fruit of fruits) {
+    console.log(fruit)
+}</code>
+    <p>Loop over a object.</p>
+    <code mime="application/javascript">
+let fruits = {"apples": 1, "bananas": 2}
+
+for (const key in fruits) {
+    console.log(key, fruits[key])
+}</code>
+  </section>
+
+  <section>
+    <title>JSON</title>
+    <p>Serialization of object into a string</p>
+    <code mime="application/javascript">
+let fruits = ["apple", "banana", "pear"];
+let fruit_string = JSON.stringify(fruits);</code>
+    <p>Deserialization from a string into a object</p>
+    <code mime="application/javascript">
+let fruits = JSON.parse(fruit_string);</code>
+  </section>
+
+  <section>
+    <title>Class</title>
+    <p>A class with a constructor.</p>
+    <code mime="application/javascript">
+class Player {
+   #hitpoints;
+   #name;
+
+   constructor(name) {
+       this.#hitpoints = 100;
+       this.#name = name;
+   }
+
+   eat() {
+       this.#hitpoints += 10;
+   }
+}</code>
+  </section>
+
+</page>

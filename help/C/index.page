@@ -1,0 +1,58 @@
+<page xmlns="http://projectmallard.org/1.0/" type="guide" id="index">
+
+  <info>
+    <title type="link" role="trail">PyRose Help</title>
+    <title type="text">PyRose Help</title>
+    <title type="link">PyRose Help</title>
+    <credit type="author">
+      <name>Jonathan</name>
+    </credit>
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude" />
+  </info>
+
+  <title>PyRose Help</title>
+
+  <section id="languages">
+    <title>Languages</title>
+  </section>
+
+  <section>
+    <title>User Interface</title>
+    <p>You can ring the terminal bell by printing the <code>\a</code> ANSI escape code.</p>
+    <p>Press <key>F5</key> to run the code.</p>
+
+    <p>Right-click and select "Insert Symbol" to insert special characters.</p>
+  </section>
+
+  <section>
+    <title>Allow network access</title>
+    <p>Your code runs confined inside a sandboxed Flatpak environment. If your code needs network access you can override the permissions.</p>
+    <screen>flatpak override --user --share=network io.github.vanillajonathan.pyrose</screen>
+  </section>
+
+  <section>
+    <title>Allow file system access</title>
+    <p>Your code runs confined inside a sandboxed Flatpak environment. If you need to access files outside the sandbox you can override the permissions.</p>
+    <screen>flatpak override --user --filesystem=home</screen>
+    <p><link href="https://docs.flatpak.org/en/latest/sandbox-permissions.html">https://docs.flatpak.org/en/latest/sandbox-permissions.html</link></p>
+
+    <note style="tip">
+      <title>Managing permissions</title>
+      <p>
+        You can use <link href="https://flathub.org/apps/com.github.tchx84.Flatseal">Flatseal</link> to manage permissions.
+      </p>
+    </note>
+  </section>
+
+  <section>
+    <title>Paths</title>
+    <p><app>PyRose</app> looks for interpreters and LSP clients in the following locations:</p>
+    <list>
+      <item><p><file>/app/bin</file></p></item>
+      <item><p><file>/usr/bin</file></p></item>
+      <item><p><file>/home/<em>username</em>/.cargo/bin</file></p></item>
+      <item><p><file>/home/<em>username</em>/.local/bin</file></p></item>
+    </list>
+   </section>
+
+</page>

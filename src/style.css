@@ -1,0 +1,93 @@
+:root {
+  --headerbar-bell-oklch: 1 c h;
+}
+
+@keyframes bell {
+  50% {
+    background-color: oklch(from var(--accent-orange) var(--headerbar-bell-oklch));
+  }
+}
+
+.bell {
+  animation: bell 0.5s ease-out;
+}
+
+vte-terminal {
+  padding-left: 6px;
+  padding-right: 6px;
+}
+
+.position_label {
+  border-radius: 8px;
+  padding: 3px 12px;
+  margin: 4px;
+  background-color: var(--view-bg-color);
+  box-shadow: inset 0 100px 0 0 color-mix(in srgb, currentColor 10%, transparent);
+  opacity: 0;
+  transition: opacity 0.5s ease-out;
+}
+
+.position_label.visible {
+  opacity: 1;
+}
+
+popover flowboxchild {
+  font-size: x-large;
+  padding: 6px;
+  border-radius: 6px;
+}
+
+popover flowboxchild:focus, popover flowboxchild:hover {
+  background-color: var(--popover-shade-color);
+}
+
+.css_text {
+  color: var(--green-3);
+}
+
+.lang-constant {
+  color: var(--light-3);
+}
+
+.lang-class {
+  color: var(--yellow-3);
+}
+
+.lang-exception {
+  color: var(--red-3);
+}
+
+.lang-function {
+  color: var(--purple-3);
+}
+
+.lang-Variable {
+  color: var(--blue-3);
+}
+
+.lang-text { color: var(--green-3); }
+.lang-method {}
+.lang-function { color: var(--purple-3); }
+.lang-constructor {}
+.lang-field {}
+.lang-variable { color: var(--blue-3); }
+.lang-class { color: var(--yellow-3); }
+.lang-exception { color: var(--red-3); }
+.lang-interface {}
+.lang-module {}
+.lang-property {}
+.lang-unit {}
+.lang-value {}
+.lang-enum {}
+.lang-keyword {}
+.lang-snippet {}
+.lang-color {}
+.lang-file {}
+.lang-reference {}
+.lang-folder {}
+.lang-enum-member {}
+.lang-constant { color: var(--light-3); }
+.lang-struct {}
+.lang-event {}
+.lang-operator {}
+.lang-type-parameter {}

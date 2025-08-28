@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=PyRose
+Comment=Playground for programmers
+Exec=pyrose
+Icon=io.github.vanillajonathan.pyrose
+Terminal=false
+Type=Application
+Categories=Development;
+Keywords=compiler;interpreter;playground;python;
+StartupNotify=true
+DBusActivatable=true

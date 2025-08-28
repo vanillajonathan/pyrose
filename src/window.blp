@@ -1,0 +1,124 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $PyroseWindow: Adw.ApplicationWindow {
+  title: _("PyRose");
+  default-width: 800;
+  default-height: 600;
+
+  EventControllerKey {
+    key-pressed => $on_key_pressed();
+    propagation-phase: capture;
+  }
+
+  content: Adw.ToolbarView {
+    [top]
+    Adw.HeaderBar header_bar {
+      Box {
+        Button run {
+          action-name: "win.run";
+          icon-name: "media-playback-start-symbolic";
+          tooltip-text: _("Run");
+        }
+
+        Button stop {
+          action-name: "win.stop";
+          icon-name: "media-playback-stop-symbolic";
+          tooltip-text: _("Stop");
+        }
+
+        styles [
+          "linked",
+        ]
+      }
+
+      [end]
+      Button unfullscreen_button {
+        action-name: "win.fullscreen";
+        icon-name: "unfullscreen-square-symbolic";
+        tooltip-text: _("Unfullscreen");
+        visible: false;
+      }
+
+      [end]
+      MenuButton {
+        primary: true;
+        icon-name: "open-menu-symbolic";
+        tooltip-text: _("Main Menu");
+        menu-model: primary_menu;
+      }
+
+      [end]
+      DropDown {
+        notify::selected-item => $on_language_selection_changed();
+
+        model: StringList lang_string_list {};
+
+        selected: bind template.selected_language bidirectional;
+        show-arrow: false;
+        tooltip-text: _("Language");
+
+        accessibility {
+          description: _("Language");
+        }
+      }
+    }
+
+    content: Paned {
+      orientation: vertical;
+      shrink-start-child: false;
+      shrink-end-child: false;
+
+      start-child: $CodeView code_view {
+        changed => $on_editor_changed();
+      };
+
+      end-child: $Terminal terminal {
+        bell => $on_terminal_bell();
+        child-exited => $on_child_exited();
+      };
+    };
+  };
+}
+
+menu primary_menu {
+  section {
+    item {
+      label: _("_Open Folder");
+      action: "app.open-folder";
+    }
+
+    item {
+      label: _("_Find");
+      action: "editor.show-search";
+    }
+
+    item {
+      label: _("Fullscreen");
+      action: "win.fullscreen";
+    }
+  }
+
+  section {
+    /*
+    item {
+      label: _("_Preferences");
+      action: "app.preferences";
+    }
+    */
+    item {
+      label: _("_Keyboard Shortcuts");
+      action: "win.show-help-overlay";
+    }
+
+    item {
+      label: _("_Help");
+      action: "app.help";
+    }
+
+    item {
+      label: _("_About PyRose");
+      action: "app.about";
+    }
+  }
+}

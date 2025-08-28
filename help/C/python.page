@@ -1,0 +1,152 @@
+<page xmlns="http://projectmallard.org/1.0/" type="guide" id="python">
+
+  <info>
+    <link type="guide" xref="index#languages"/>
+  </info>
+
+  <title>Python</title>
+  <p><link href="https://docs.python.org/3/tutorial/index.html">Python tutorial</link></p>
+
+  <note style="tip">
+    <title>LSP</title>
+    <p>
+      It is recommend that you install <link href="https://pyrefly.org/">Pyrefly</link>, a LSP client for Python.
+      Place the <cmd>pyrefly</cmd> binary in your <file>.local/bin/</file> directory.
+    </p>
+    <p>
+      Install using the command: <cmd>uv tool install pyrefly</cmd>.
+    </p>
+    <p>
+      If you have the VS Code extension installed you can find the <cmd>pyrefly</cmd> binary in the <file>.vscode/extensions/meta.pyrefly-<em>[version]</em>-linux-x64</file> directory.
+    </p>
+    <p>
+      You can download the binary by running <cmd>pip3 download pyrefly</cmd> and extract the file <file>.whl</file> which is a ZIP file.
+    </p>
+  </note>
+
+  <section>
+    <title>Async</title>
+    <p>Setting up the async runtime</p>
+    <code mime="text/x-python">
+import asyncio
+
+async def hello_generator():
+    for _ in range(3):
+        yield "Hello"
+        await asyncio.sleep(1)  # Sleep for 1 second
+
+async def main():
+    async for greeting in hello_generator():
+        print(greeting)
+
+# Run the main function
+asyncio.run(main())</code>
+    <p>Executing a asynchronous function.</p>
+    <code mime="text/x-python">
+async def hello():
+    print("Hello!")
+    await asyncio.sleep(1)
+
+asyncio.create_task(hello())</code>
+  </section>
+
+  <section>
+    <title>Input</title>
+    <p>Reading user input from the command-line.</p>
+    <code mime="text/x-python">
+name = input("What is your name?")
+print(f"Hello {name}!")</code>
+  </section>
+
+  <section>
+    <title>Loops</title>
+    <p>Loop over a list.</p>
+    <code mime="text/x-python">
+fruits = ["apple", "banana"]
+
+for fruit in fruits:
+    print(fruit)</code>
+    <p>Loop over a dictionary.</p>
+    <code mime="text/x-python">
+fruits = {"apples": 1, "bananas": 2}
+
+for key, value in fruits.items():
+    print(key, value)</code>
+  </section>
+
+  <section>
+    <title>Files</title>
+    <p>Reading a file.</p>
+    <code mime="text/x-python">
+with open("example.txt") as f:
+    data = f.read()</code>
+    <p>Writing to a file.</p>
+    <code mime="text/x-python">
+with open("example.txt", "w") as f:
+    f.write("hello")</code>
+  </section>
+
+  <section>
+    <title>JSON</title>
+    <p>Serialization of object into a string</p>
+    <code mime="text/x-python">
+import json
+
+fruits = ["apple", "banana", "pear"]
+fruit_string = json.dumps(fruits)</code>
+    <p>Deserialization from a string into a object</p>
+    <code mime="text/x-python">
+fruits = json.loads(fruit_string)</code>
+
+    <p>Typed dictionary</p>
+    <code mime="text/x-python">
+import json
+from typing import TypedDict
+
+
+class Movie(TypedDict):
+    name: str
+    year: int
+
+
+movie = Movie(name="Titanic", year=1997)
+movie_json = json.dumps(movie)
+print(movie_json)</code>
+  </section>
+
+  <section>
+    <title>Example code</title>
+    <code mime="text/x-python"><![CDATA[
+def my_function(foo: int, bar: int = 1000):
+    """Example function.
+
+    Args:
+      foo: The foo value.
+      bar: The bar value. Defaults to 1000.
+
+    Returns:
+      A list.
+
+    Raises:
+      ValueError: If the value of a is not less than 1 or greater than 10.
+    """
+    if foo < 1 or foo > 10:
+        raise ValueError("The number must be within 1 and 10")
+
+    stuff = []
+
+    for number in range(1, 10):
+        stuff.append(f"Number {number}!")
+
+    return stuff
+
+
+try:
+    my_function()
+except ValueError as e:
+    print("Got error:", e)
+]]>
+</code>
+  </section>
+
+</page>

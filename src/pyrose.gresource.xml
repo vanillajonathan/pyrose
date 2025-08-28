@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+  <gresource prefix="/io/github/vanillajonathan/pyrose">
+    <file compressed="true">style.css</file>
+    <file compressed="true">style-dark.css</file>
+    <file preprocess="xml-stripblanks">window.ui</file>
+    <file preprocess="xml-stripblanks">code_view.ui</file>
+    <file preprocess="xml-stripblanks">symbol_chooser.ui</file>
+    <file preprocess="xml-stripblanks">terminal.ui</file>
+    <file preprocess="xml-stripblanks">gtk/help-overlay.ui</file>
+  </gresource>
+  <gresource prefix="/io/github/vanillajonathan/pyrose/icons/scalable/actions/">
+    <file preprocess="xml-stripblanks" alias="unfullscreen-square-symbolic.svg">../data/icons/hicolor/scalable/actions/unfullscreen-square-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="circle-outline-thick-symbolic.svg">../data/icons/hicolor/scalable/actions/circle-outline-thick-symbolic.svg</file>
+  </gresource>
+</gresources>

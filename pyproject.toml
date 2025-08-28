@@ -1,0 +1,28 @@
+[project]
+name = "PyRose"
+version = "0.1.0"
+description = "Playground for programmers"
+readme = "README.md"
+license = "MIT"
+keywords = ["tools"]
+requires-python = ">=3.13"
+dependencies = [
+    "lsp-types>=0.10.0",
+]
+
+classifiers = [
+  "Private :: Do Not Upload",
+  "Environment :: X11 Applications :: GTK",
+  "Environment :: X11 Applications :: Gnome",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Natural Language :: English",
+  "Operating System :: POSIX :: Linux",
+  "Programming Language :: Python :: 3",
+  "Topic :: Software Development"
+]
+
+[dependency-groups]
+dev = [
+    "pygobject-stubs>=2.13.0",
+]

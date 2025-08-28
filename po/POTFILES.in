@@ -1,0 +1,8 @@
+# List of source files containing translatable strings.
+# Please keep this file sorted alphabetically.
+data/io.github.vanillajonathan.pyrose.desktop.in
+data/io.github.vanillajonathan.pyrose.metainfo.xml.in
+data/io.github.vanillajonathan.pyrose.gschema.xml
+src/main.py
+src/window.py
+src/window.blp

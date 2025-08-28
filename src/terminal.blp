@@ -1,0 +1,104 @@
+using Gtk 4.0;
+using Vte 3.91;
+
+template $Terminal: Widget {
+  layout-manager: BoxLayout {
+    orientation: vertical;
+  };
+
+  Overlay {
+    ScrolledWindow {
+      vexpand: true;
+
+      Vte.Terminal terminal {
+        bell => $on_bell();
+        child-exited => $on_child_exited();
+        selection-changed => $on_selection_changed();
+        context-menu-model: context_menu;
+      }
+    }
+
+    [overlay]
+    Label status_label {
+      halign: end;
+      valign: end;
+
+      styles [
+        "position_label",
+      ]
+    }
+  }
+
+  Revealer search_revealer {
+    transition-type: slide_up;
+
+    Box {
+      halign: center;
+      spacing: 3;
+
+      SearchEntry search_entry {
+        search-changed => $on_search_changed();
+        placeholder-text: "Find text";
+      }
+
+      Box {
+        spacing: 3;
+
+        Button {
+          action-name: "terminal.search-prev";
+          icon-name: "go-up-symbolic";
+          tooltip-text: _("Previous Match");
+
+          styles [
+            "flat",
+          ]
+        }
+
+        Button {
+          action-name: "terminal.search-next";
+          icon-name: "go-down-symbolic";
+          tooltip-text: _("Next Match");
+
+          styles [
+            "flat",
+          ]
+        }
+      }
+
+      Button {
+        action-name: "terminal.search-hide";
+        icon-name: "window-close-symbolic";
+        tooltip-text: _("Close Search");
+
+        styles [
+          "circular",
+          "flat",
+        ]
+      }
+    }
+  }
+}
+
+menu context_menu {
+  section {
+    item {
+      label: _("_Reset");
+      action: "terminal.reset";
+    }
+
+    item {
+      label: _("_Copy");
+      action: "terminal.copy";
+    }
+
+    item {
+      label: _("_Paste");
+      action: "terminal.paste";
+    }
+
+    item {
+      label: _("_Select All");
+      action: "terminal.select-all";
+    }
+  }
+}

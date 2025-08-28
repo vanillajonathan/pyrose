@@ -1,0 +1,190 @@
+using Gtk 4.0;
+using GtkSource 5;
+
+template $CodeView: Widget {
+  layout-manager: BoxLayout {
+    orientation: vertical;
+  };
+
+  Revealer goto_line_revealer {
+    transition-type: slide_up;
+
+    Box {
+      halign: center;
+
+      Label {
+        label: _("Go to Line");
+
+        styles [
+          "heading",
+        ]
+      }
+
+      Entry goto_line_entry {
+        activate => $on_goto_line_entry_activate();
+        input-hints: no_emoji;
+        input-purpose: number;
+        width-chars: 3;
+        max-width-chars: 7;
+      }
+
+      Button goto_line_button {
+        action-name: "editor.goto-line";
+        label: _("Go");
+
+        styles [
+          "suggested-action",
+        ]
+      }
+
+      styles [
+        "toolbar",
+      ]
+    }
+  }
+
+  Revealer search_revealer {
+    transition-type: slide_up;
+
+    Box {
+      halign: center;
+      spacing: 3;
+
+      SearchEntry search_entry {
+        activate => $on_search_entry_activate();
+        search-changed => $on_search_changed();
+        placeholder-text: "Find text";
+
+        EventControllerKey {
+          key-pressed => $on_search_entry_key_pressed();
+          propagation-phase: capture;
+        }
+      }
+
+      Box {
+        spacing: 3;
+
+        Button {
+          action-name: "editor.search-prev";
+          icon-name: "go-up-symbolic";
+          tooltip-text: _("Previous Match");
+
+          styles [
+            "flat",
+          ]
+        }
+
+        Button {
+          action-name: "editor.search-next";
+          icon-name: "go-down-symbolic";
+          tooltip-text: _("Next Match");
+
+          styles [
+            "flat",
+          ]
+        }
+      }
+
+      Button {
+        action-name: "editor.search-hide";
+        icon-name: "window-close-symbolic";
+        tooltip-text: _("Close Search");
+
+        styles [
+          "circular",
+          "flat",
+        ]
+      }
+    }
+  }
+
+  Overlay {
+    ScrolledWindow {
+      height-request: 180;
+      vexpand: true;
+
+      GtkSource.View sourceview {
+        DropTarget {
+          drop => $on_droptarget_drop();
+          actions: copy;
+          formats: "GFile";
+        }
+
+        GestureClick {
+          pressed => $on_gestureclick_pressed();
+          button: 3;
+        }
+
+        $SymbolChooser symbol_chooser {
+          symbol-picked => $on_symbol_picked();
+        }
+
+        [internal-child completion]
+        GtkSource.Completion {
+          page-size: 7;
+          select-on-show: true;
+        }
+
+        auto-indent: true;
+        highlight-current-line: true;
+        indent-width: 4;
+        insert-spaces-instead-of-tabs: true;
+        monospace: true;
+        show-line-numbers: true;
+        show-right-margin: true;
+        smart-backspace: true;
+        tab-width: 4;
+
+        buffer: GtkSource.Buffer buffer {
+          changed => $on_editor_changed();
+          cursor-moved => $on_editor_cursor_moved();
+
+          tag-table: TextTagTable {
+            [tag]
+            TextTag error_tag {
+              name: "error";
+              underline: error;
+            }
+
+            [tag]
+            TextTag warning_tag {
+              name: "warning";
+              underline: error;
+              underline-rgba: "#FFFF0000";
+            }
+
+            [tag]
+            TextTag information_tag {
+              name: "information";
+              underline: error;
+              underline-rgba: "#0000FF00";
+            }
+
+            [tag]
+            TextTag hint_tag {
+              name: "hint";
+              underline: error;
+              underline-rgba: "#00FF0000";
+            }
+
+            [tag]
+            TextTag deprecated_tag {
+              name: "deprecated";
+              strikethrough: true;
+            }
+          };
+        };
+      }
+    }
+
+    [overlay]
+    Label position_label {
+      halign: end;
+      valign: end;
+
+      styles [
+        "position_label",
+      ]
+    }
+  }
+}

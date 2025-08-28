@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist gettext-domain="pyrose">
+	<schema id="io.github.vanillajonathan.pyrose" path="/io/github/vanillajonathan/pyrose/">
+	</schema>
+</schemalist>
