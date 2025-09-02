@@ -85,6 +85,17 @@ template $CodeView: Widget {
         }
       }
 
+      MenuButton options_button {
+        direction: down;
+        tooltip-text: _("Search Options");
+        icon-name: "emblem-system-symbolic";
+        menu-model: options_menu;
+
+        styles [
+          "flat",
+        ]
+      }
+
       Button {
         action-name: "editor.search-hide";
         icon-name: "window-close-symbolic";
@@ -185,6 +196,25 @@ template $CodeView: Widget {
       styles [
         "position_label",
       ]
+    }
+  }
+}
+
+menu options_menu {
+  section {
+    item {
+      label: _("Re_gular Expressions");
+      action: "search-options.regex";
+    }
+
+    item {
+      label: _("_Case Sensitive");
+      action: "search-options.case-sensitive";
+    }
+
+    item {
+      label: _("Match Whole _Word Only");
+      action: "search-options.match-whole-word";
     }
   }
 }

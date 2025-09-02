@@ -33,6 +33,7 @@ class CodeView(Gtk.Widget):
         self.animate_fade_task: Task | None = None
         self.languages = []
         self.search_context: GtkSource.SearchContext | None = None
+        self.search_settings = GtkSource.SearchSettings()
 
         actions = (
             ("goto-line", self.editor_goto_line),
@@ -72,6 +73,39 @@ class CodeView(Gtk.Widget):
         self.sourceview.get_extra_menu().insert(  # pyrefly: ignore[missing-attribute]
             0, "Insert Symbol", "misc.insert-symbol"
         )
+
+        self.install_property_action("search-options.regex", "regex_enabled")
+        self.install_property_action("search-options.case-sensitive", "case_sensitive")
+        self.install_property_action(
+            "search-options.match-whole-word", "match_whole_word"
+        )
+
+    @GObject.Property(type=bool, default=False)
+    def regex_enabled(self) -> bool:
+        return self._regex_enabled
+
+    @regex_enabled.setter
+    def regex_enabled(self, enabled):
+        self.search_settings.set_regex_enabled(enabled)
+        self._regex_enabled = enabled
+
+    @GObject.Property(type=bool, default=False)
+    def case_sensitive(self) -> bool:
+        return self._case_sensitive
+
+    @case_sensitive.setter
+    def case_sensitive(self, enabled):
+        self.search_settings.set_case_sensitive(enabled)
+        self._case_sensitive = enabled
+
+    @GObject.Property(type=bool, default=False)
+    def match_whole_word(self) -> bool:
+        return self._match_whole_word
+
+    @match_whole_word.setter
+    def match_whole_word(self, enabled):
+        self.search_settings.set_at_word_boundaries(enabled)
+        self._match_whole_word = enabled
 
     @GObject.Signal(flags=GObject.SignalFlags.RUN_LAST, arg_types=(GtkSource.Buffer,))
     def changed(self, buffer: GtkSource.Buffer):
@@ -175,10 +209,11 @@ class CodeView(Gtk.Widget):
     @Gtk.Template.Callback()
     def on_search_changed(self, entry: Gtk.SearchEntry):
         text = entry.get_text()
-        settings = GtkSource.SearchSettings()
-        settings.set_search_text(text)
-        settings.set_wrap_around(True)
-        self.search_context = GtkSource.SearchContext.new(self.buffer, settings)
+        self.search_settings.set_search_text(text)
+        self.search_settings.set_wrap_around(True)
+        self.search_context = GtkSource.SearchContext.new(
+            self.buffer, self.search_settings
+        )
         self.search_context.forward(self.buffer.get_start_iter())
         if self.search_context.get_occurrences_count() == -1:
             self.action_group.lookup_action("search-prev").set_enabled(False)
