@@ -46,18 +46,43 @@ template $CodeView: Widget {
   Revealer search_revealer {
     transition-type: slide_up;
 
-    Box {
+    Grid {
       halign: center;
-      spacing: 3;
+
+      styles [
+        "toolbar",
+      ]
 
       SearchEntry search_entry {
         activate => $on_search_entry_activate();
         search-changed => $on_search_changed();
-        placeholder-text: "Find text";
+        placeholder-text: "Search";
+
+        layout {
+          row: "0";
+          column: "0";
+        }
 
         EventControllerKey {
           key-pressed => $on_search_entry_key_pressed();
           propagation-phase: capture;
+        }
+      }
+
+      Entry replace_entry {
+        primary-icon-name: "edit-find-replace-symbolic";
+        max-width-chars: 20;
+        hexpand: true;
+        visible: false;
+        placeholder-text: _("Replace");
+
+        accessibility {
+          label: _("Replace");
+        }
+
+        layout {
+          row: "1";
+          column: "0";
         }
       }
 
@@ -66,6 +91,8 @@ template $CodeView: Widget {
 
         Button {
           action-name: "editor.search-prev";
+          focus-on-click: false;
+          hexpand: true;
           icon-name: "go-up-symbolic";
           tooltip-text: _("Previous Match");
 
@@ -76,6 +103,8 @@ template $CodeView: Widget {
 
         Button {
           action-name: "editor.search-next";
+          focus-on-click: false;
+          hexpand: true;
           icon-name: "go-down-symbolic";
           tooltip-text: _("Next Match");
 
@@ -83,6 +112,27 @@ template $CodeView: Widget {
             "flat",
           ]
         }
+
+        layout {
+          row: "0";
+          column: "1";
+        }
+      }
+
+      ToggleButton {
+        action-name: "search.replace-mode";
+        tooltip-text: _("Search & Replace");
+        icon-name: "edit-find-replace-symbolic";
+        focus-on-click: false;
+
+        layout {
+          row: "0";
+          column: "2";
+        }
+
+        styles [
+          "flat",
+        ]
       }
 
       MenuButton options_button {
@@ -90,6 +140,11 @@ template $CodeView: Widget {
         tooltip-text: _("Search Options");
         icon-name: "emblem-system-symbolic";
         menu-model: options_menu;
+
+        layout {
+          row: "0";
+          column: "3";
+        }
 
         styles [
           "flat",
@@ -101,10 +156,44 @@ template $CodeView: Widget {
         icon-name: "window-close-symbolic";
         tooltip-text: _("Close Search");
 
+        layout {
+          row: "0";
+          column: "4";
+        }
+
         styles [
           "circular",
           "flat",
         ]
+      }
+
+      Button replace_button {
+        action-name: "search.replace-one";
+        use-underline: true;
+        label: _("_Replace");
+        visible: false;
+        focus-on-click: false;
+        can-shrink: true;
+
+        layout {
+          row: "1";
+          column: "1";
+        }
+      }
+
+      Button replace_all_button {
+        action-name: "search.replace-all";
+        use-underline: true;
+        label: _("Replace _All");
+        visible: false;
+        focus-on-click: false;
+        can-shrink: true;
+
+        layout {
+          row: "1";
+          column: "2";
+          column-span: "3";
+        }
       }
     }
   }

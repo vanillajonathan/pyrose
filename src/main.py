@@ -45,6 +45,7 @@ class PyroseApplication(Adw.Application):
             "editor.show-goto-line", ["<Control>G", "<Control>I"]
         )
         self.set_accels_for_action("editor.show-search", ["<Control>F"])
+        self.set_accels_for_action("editor.show-replace", ["<Control>H"])
         self.set_accels_for_action("editor.search-prev", ["<Control><Shift>G"])
         self.set_accels_for_action("editor.search-next", ["<Control>G"])
         self.set_accels_for_action("terminal.copy", ["<Ctrl><Shift>C"])
