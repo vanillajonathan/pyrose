@@ -71,6 +71,7 @@ template $PyroseWindow: Adw.ApplicationWindow {
 
       start-child: $CodeView code_view {
         changed => $on_editor_changed();
+        cursor-moved => $on_editor_cursor_moved();
       };
 
       end-child: $Terminal terminal {

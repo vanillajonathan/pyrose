@@ -3,7 +3,12 @@ import os
 import gi
 
 from asyncio import Task
-from lsp_types import DiagnosticSeverity, DiagnosticTag, PublishDiagnosticsParams
+from lsp_types import (
+    DiagnosticSeverity,
+    DiagnosticTag,
+    DocumentHighlight,
+    PublishDiagnosticsParams,
+)
 from .symbol_chooser import SymbolChooser
 
 gi.require_version("Adw", "1")
@@ -130,6 +135,11 @@ class CodeView(Gtk.Widget):
         """Called every time the changed signal is emitted."""
         pass
 
+    @GObject.Signal(flags=GObject.SignalFlags.RUN_LAST, arg_types=(GtkSource.Buffer,))
+    def cursor_moved(self, buffer: GtkSource.Buffer):
+        """Called every time the cursor-moved signal is emitted."""
+        pass
+
     @GObject.Signal(
         flags=GObject.SignalFlags.RUN_LAST, arg_types=(Gtk.DropTarget, Gio.File)
     )
@@ -193,6 +203,7 @@ class CodeView(Gtk.Widget):
         if self.animate_fade_task is not None:
             self.animate_fade_task.cancel()
         self.animate_fade_task = asyncio.create_task(animate_fade())
+        self.emit("cursor-moved", buffer)
 
     @Gtk.Template.Callback()
     def on_gestureclick_pressed(self, gesture, n_press: int, x: float, y: float):
@@ -301,6 +312,28 @@ class CodeView(Gtk.Widget):
         for tag in tags:
             self.buffer.remove_tag_by_name(tag, start_iter, end_iter)
 
+    def highlight(self, highlights: list[DocumentHighlight] | None) -> None:
+        start_iter = self.buffer.get_start_iter()
+        end_iter = self.buffer.get_end_iter()
+        self.buffer.remove_tag_by_name("highlight", start_iter, end_iter)
+        if not highlights:
+            return
+        for highlight in highlights:
+            start_line = highlight["range"]["start"]["line"]
+            start_char = highlight["range"]["start"]["character"]
+            end_line = highlight["range"]["end"]["line"]
+            end_char = highlight["range"]["end"]["character"]
+            found_start, start_iter = self.buffer.get_iter_at_line_offset(
+                start_line, start_char
+            )
+            found_end, end_iter = self.buffer.get_iter_at_line_offset(
+                end_line, end_char
+            )
+            if not found_start or not found_end:
+                continue
+
+            self.buffer.apply_tag_by_name("highlight", start_iter, end_iter)
+
     def goto_line(self, action, parameter):
         line, column = 0, 0
         try:
@@ -334,6 +367,7 @@ class CodeView(Gtk.Widget):
         self.reveal_search(action, parameter)
 
     def search_hide(self, action, parameter):
+        self.replace_mode = False
         self.search_settings.set_search_text(None)
         self.search_revealer.set_reveal_child(False)
         self.sourceview.grab_focus()

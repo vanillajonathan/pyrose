@@ -41,6 +41,9 @@ class PyroseWindow(Adw.ApplicationWindow):
         self.languages = languages
         self.code_view.languages = languages
 
+        if self.props.application.props.application_id.endswith(".devel"):
+            self.add_css_class("devel")
+
         for language in languages:
             self.lang_string_list.append(language[0])
 
@@ -72,10 +75,35 @@ class PyroseWindow(Adw.ApplicationWindow):
         self.get_application().create_asyncio_task(task)
 
     @Gtk.Template.Callback()
+    def on_editor_cursor_moved(self, code_view: CodeView, buffer: GtkSource.Buffer):
+        if self.lsp_client is None or self.lsp_client.server_capabilities is None:
+            return
+        if "documentHighlightProvider" not in self.lsp_client.server_capabilities:
+            return
+        if self.lsp_client.server_capabilities["documentHighlightProvider"] is False:
+            return
+
+        async def highlight():
+            insert_mark = buffer.get_insert()
+            cursor_iter = buffer.get_iter_at_mark(insert_mark)
+            line = cursor_iter.get_line()
+            column = cursor_iter.get_line_offset()
+            highlights = await self.lsp_client.requests.document_highlight(
+                {
+                    "textDocument": {"uri": self.uri},
+                    "position": {"line": line, "character": column},
+                }
+            )
+
+            self.code_view.highlight(highlights)
+
+        asyncio.create_task(highlight())
+
+    @Gtk.Template.Callback()
     def on_key_pressed(self, controller, keyval, keycode, state) -> bool:
         if keyval == Gdk.KEY_Escape and state == 0:
             self.code_view.goto_line_revealer.set_reveal_child(False)
-            self.code_view.search_revealer.set_reveal_child(False)
+            self.code_view.activate_action("editor.search-hide")
             self.terminal.search_revealer.set_reveal_child(False)
             self.code_view.sourceview.get_completion().hide()
             self.code_view.sourceview.grab_focus()
@@ -146,7 +174,7 @@ class PyroseWindow(Adw.ApplicationWindow):
 
         async def start_lsp(uri):
             try:
-                process = await start_lsp_process("pyrefly", ["lsp", "--verbose"])
+                process = await start_lsp_process("pyrefly", ["lsp"])
             except OSError:
                 logger.debug("LSP not started")
                 return

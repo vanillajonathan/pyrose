@@ -241,6 +241,12 @@ template $CodeView: Widget {
 
           tag-table: TextTagTable {
             [tag]
+            TextTag {
+              name: "highlight";
+              background-rgba: "#ffff0022";
+            }
+
+            [tag]
             TextTag error_tag {
               name: "error";
               underline: error;
