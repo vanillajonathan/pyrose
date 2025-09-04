@@ -14,7 +14,7 @@ class CompletionProposal(GObject.Object, GtkSource.CompletionProposal):
         self.item = item
         self.label: str = item["label"]
         self.text: str = item["label"]
-        self.kind: lsp.CompletionItemKind = item["kind"]
+        self.kind: lsp.CompletionItemKind | None = item.get("kind")
         self.info: str = ""
         self.sort_text = item.get("sortText", self.label)
         self.detail: str | None = item.get("detail")
@@ -53,14 +53,14 @@ class CompletionProvider(GObject.GObject, GtkSource.CompletionProvider):
         self._client = client
         self._filter_data: FilterData = FilterData()
 
-    def do_activate(self, context, proposal) -> None:
-        buffer = context.get_buffer()
-        buffer.begin_user_action()
-        has_selection, begin, end = context.get_bounds()
-        if has_selection:
-            buffer.delete(begin, end)
-        buffer.insert(begin, proposal.text, len(proposal.text))
-        buffer.end_user_action()
+    def do_activate(self, context: GtkSource.CompletionContext, proposal) -> None:
+        if buffer := context.get_buffer():
+            buffer.begin_user_action()
+            has_selection, begin, end = context.get_bounds()
+            if has_selection:
+                buffer.delete(begin, end)
+            buffer.insert(begin, proposal.text, len(proposal.text))
+            buffer.end_user_action()
 
     def do_display(
         self,
@@ -95,7 +95,8 @@ class CompletionProvider(GObject.GObject, GtkSource.CompletionProvider):
                 cell.set_text(text)
         elif cell.props.column == GtkSource.CompletionColumn.COMMENT:
             if proposal.detail:
-                cell.set_markup(f"<tt>{proposal.detail}</tt>")
+                cell.set_text(proposal.detail)
+                cell.add_css_class("monospace")
         elif cell.props.column == GtkSource.CompletionColumn.DETAILS:
             if not proposal.documentation:
                 return
