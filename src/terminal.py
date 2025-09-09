@@ -70,17 +70,6 @@ class Terminal(Gtk.Widget):
 
     @Gtk.Template.Callback()
     def on_child_exited(self, terminal, exit_status: int) -> None:
-        RED = "\033[31m"
-        GREEN = "\033[32m"
-        RESET = "\033[0m"
-        if exit_status == 0:
-            bullet = f"{GREEN}●{RESET}"
-        else:
-            bullet = f"{RED}●{RESET}"
-        terminal.feed(
-            f"\r\n{bullet} Process exited with status: {exit_status}\r\n".encode()
-        )
-
         bullet = "🟢" if exit_status == 0 else "🔴"
         self.status_label.set_label(
             f"{bullet} Process exited with status: {exit_status}"
