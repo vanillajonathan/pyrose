@@ -114,6 +114,7 @@ class PyroseWindow(Adw.ApplicationWindow):
     def on_language_selection_changed(self, dropdown: Gtk.DropDown, _):
         if string_object := dropdown.get_selected_item():
             language = string_object.get_string()
+            self.save_buffer()
             self.set_language(language)
 
     def on_run_activated(self, action, parameter):
@@ -281,8 +282,12 @@ class PyroseWindow(Adw.ApplicationWindow):
     def on_unrealize(self, window):
         if self.lsp_client:
             asyncio.create_task(self.lsp_client.exit())
+        self.save_buffer()
+
+    def save_buffer(self):
         if self.code_view.buffer.get_modified():
             base_dir = os.environ.get("XDG_STATE_HOME", ".pyrose")
             buffer_file = os.path.join(base_dir, "buffer.txt")
             with open(buffer_file, "w") as f:
                 f.write(self.code_view.buffer.props.text)
+            self.code_view.buffer.set_modified(False)
