@@ -115,6 +115,18 @@ print(movie_json)</code>
   </section>
 
   <section>
+    <title>Filter and map</title>
+    <p>The <code>filter()</code> function applies a specified function to each item in an iterable and returns an
+      iterator containing only the items for which the function returns <code>True</code>.</p>
+    <code mime="text/x-python">
+adults = filter(lambda person: person.age >= 18, people)</code>
+    <p>The <code>map()</code> function applies a specified function to each item in an iterable (like a list) and
+      returns an iterator of the results.</p>
+    <code mime="text/x-python">
+doubled_numbers = map(lambda x: x * 2, numbers)</code>
+  </section>
+
+  <section>
     <title>Example code</title>
     <code mime="text/x-python"><![CDATA[
 def my_function(foo: int, bar: int = 1000):

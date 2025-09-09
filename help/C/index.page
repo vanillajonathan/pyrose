@@ -33,7 +33,7 @@
   <section>
     <title>Allow file system access</title>
     <p>Your code runs confined inside a sandboxed Flatpak environment. If you need to access files outside the sandbox you can override the permissions.</p>
-    <screen>flatpak override --user --filesystem=home</screen>
+    <screen>flatpak override --user --filesystem=home io.github.vanillajonathan.pyrose</screen>
     <p><link href="https://docs.flatpak.org/en/latest/sandbox-permissions.html">https://docs.flatpak.org/en/latest/sandbox-permissions.html</link></p>
 
     <note style="tip">
