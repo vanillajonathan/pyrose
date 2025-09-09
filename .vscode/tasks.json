@@ -1,0 +1,56 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build Flatpak",
+            "type": "shell",
+            "command": "flatpak-builder",
+            "args": [
+                "--force-clean",
+                "build-dir",
+                "io.github.vanillajonathan.pyrose.json"
+            ],
+        },
+        {
+            "label": "Format .blp files",
+            "type": "shell",
+            "command": "blueprint-compiler",
+            "args": [
+                "format",
+                "--fix",
+                "src/*.blp"
+            ]
+        },
+        {
+            "label": "Install or update Pyrefly",
+            "type": "shell",
+            "command": "uv",
+            "args": [
+                "tool",
+                "install",
+                "pyrefly",
+                "--force"
+            ]
+        },
+        {
+            "label": "Ruff format",
+            "type": "shell",
+            "command": "uvx",
+            "args": [
+                "ruff",
+                "format"
+            ]
+        },
+        {
+            "label": "Ruff check",
+            "type": "shell",
+            "command": "uvx",
+            "args": [
+                "ruff",
+                "check"
+            ]
+        }
+    ]
+}
