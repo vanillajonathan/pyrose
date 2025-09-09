@@ -1,0 +1,17 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $PreferencesDialog: Adw.PreferencesDialog {
+  Adw.PreferencesPage {
+    Adw.PreferencesGroup {
+      title: _("Python");
+      description: _("The <tt>PYTHONPATH</tt> environment variable is used to augment the default search path for module files.");
+
+      Adw.EntryRow python_path_entry {
+        title: _("PYTHONPATH environment variable");
+        show-apply-button: true;
+        apply => $on_apply();
+      }
+    }
+  }
+}

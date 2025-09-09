@@ -5,6 +5,7 @@ blueprints = custom_target('blueprints',
   input: files(
     'window.blp',
     'code_view.blp',
+    'preferences.blp',
     'symbol_chooser.blp',
     'terminal.blp',
     'gtk/help-overlay.blp',
@@ -48,6 +49,7 @@ pyrose_sources = [
   'window.py',
   'lsp_client.py',
   'pango_utils.py',
+  'preferences.py',
   'symbol_chooser.py',
   'terminal.py'
 ]

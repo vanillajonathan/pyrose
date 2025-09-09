@@ -10,6 +10,7 @@ import gi
 
 from gettext import gettext as _
 from gi.events import GLibEventLoopPolicy
+from .preferences import PreferencesDialog
 from .window import PyroseWindow
 
 gi.require_version("Adw", "1")
@@ -36,7 +37,7 @@ class PyroseApplication(Adw.Application):
         self.create_action("about", self.on_about_action)
         self.create_action("help", self.on_help_action, ["F1"])
         self.create_action("open-folder", self.on_open_folder_action, ["<Control>M"])
-        self.create_action("preferences", self.on_preferences_action)
+        self.create_action("preferences", self.on_preferences_action, ["<Primary>comma"])
 
         self.set_accels_for_action("win.run", ["<Control>Return", "F5"])
         self.set_accels_for_action("win.stop", ["<Shift>F5"])
@@ -57,6 +58,10 @@ class PyroseApplication(Adw.Application):
         new_directories = f"{user_home_dir}/.cargo/bin"
         new_directories += f":{user_home_dir}/.local/bin"
         os.environ["PATH"] = new_directories + ":" + os.environ["PATH"]
+
+        settings = Gio.Settings.new("io.github.vanillajonathan.pyrose")
+        if python_path := settings.get_string("python-path"):
+            os.environ["PYTHONPATH"] = python_path
 
         self.languages = []
         self.languages.append(
@@ -143,7 +148,8 @@ class PyroseApplication(Adw.Application):
 
     def on_preferences_action(self, widget, _):
         """Callback for the app.preferences action."""
-        print("app.preferences action activated")
+        dialog = PreferencesDialog()
+        dialog.present(self.props.active_window)
 
     def create_action(self, name, callback, shortcuts=None):
         """Add an application action.

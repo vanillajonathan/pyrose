@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist gettext-domain="pyrose">
 	<schema id="io.github.vanillajonathan.pyrose" path="/io/github/vanillajonathan/pyrose/">
+		<key name="python-path" type="s">
+			<default>""</default>
+			<summary>The PYTHONPATH environment variable</summary>
+			<description>Augment the default search path for module files.</description>
+		</key>
 	</schema>
 </schemalist>

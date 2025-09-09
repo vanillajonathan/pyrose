@@ -5,6 +5,7 @@
     <file compressed="true">style-dark.css</file>
     <file preprocess="xml-stripblanks">window.ui</file>
     <file preprocess="xml-stripblanks">code_view.ui</file>
+    <file preprocess="xml-stripblanks">preferences.ui</file>
     <file preprocess="xml-stripblanks">symbol_chooser.ui</file>
     <file preprocess="xml-stripblanks">terminal.ui</file>
     <file preprocess="xml-stripblanks">gtk/help-overlay.ui</file>
