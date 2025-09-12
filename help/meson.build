@@ -4,6 +4,7 @@ gnome.yelp(meson.project_name(),
     'index.page',
     'javascript.page',
     'legal.xml',
+    'perl.page',
     'python.page',
     'symbols.page'
   ]

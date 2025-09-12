@@ -1,0 +1,27 @@
+<page xmlns="http://projectmallard.org/1.0/" type="guide" id="perl">
+
+  <info>
+    <link type="guide" xref="index#languages"/>
+  </info>
+
+  <title>Perl</title>
+  <p><link href="https://perldoc.perl.org">Perl documentation</link></p>
+
+  <section>
+    <title>Console</title>
+    <p>Printing to the console</p>
+    <code mime="application/perl">
+use v5.35;
+
+print "Hello, world";</code>
+  </section>
+
+  <section>
+    <title>Function</title>
+    <code mime="application/perl">
+sub foo ($left, $right) {
+    return $left + $right;
+}</code>
+  </section>
+
+</page>
