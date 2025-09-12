@@ -26,3 +26,5 @@ classifiers = [
 dev = [
     "pygobject-stubs>=2.13.0",
 ]
+
+[tool.pyrefly]

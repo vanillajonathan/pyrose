@@ -189,6 +189,7 @@ class CodeView(Gtk.Widget):
 
     @Gtk.Template.Callback()
     def on_editor_cursor_moved(self, buffer: GtkSource.Buffer):
+        self.sourceview.get_completion().hide()
         insert_mark = buffer.get_insert()
         cursor_iter = buffer.get_iter_at_mark(insert_mark)
         line = cursor_iter.get_line()
