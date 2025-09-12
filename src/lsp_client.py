@@ -121,6 +121,12 @@ class JsonRpcDispatcher:
 
     async def _read_loop(self) -> Coroutine[None, None, None]:
         async for message in self._read_messages():
+            if message.get("jsonrpc") != "2.0":
+                logger.error("Invalid JSON-RPC version")
+                await self.send_error(
+                    lsp.ErrorCodes.InvalidRequest, "Invalid JSON-RPC version", None
+                )
+                continue
             if callback_id := message.get("id"):
                 if callback_id not in self._callbacks:
                     continue

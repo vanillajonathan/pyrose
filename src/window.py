@@ -225,6 +225,11 @@ class PyroseWindow(Adw.ApplicationWindow):
         uri = f"file://{buffer_file}"
         self.uri: DocumentUri = uri
 
+        pyproject_file = os.path.join(base_dir, "pyproject.toml")
+        if not os.path.exists(pyproject_file):
+            with open(pyproject_file, "w") as f:
+                f.write("[tool.pyrefly]")
+
         if source_language and source_language.props.id == "python3":
             self.get_application().create_asyncio_task(start_lsp(self.uri))
 
