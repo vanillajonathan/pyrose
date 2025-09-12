@@ -37,7 +37,9 @@ class PyroseApplication(Adw.Application):
         self.create_action("about", self.on_about_action)
         self.create_action("help", self.on_help_action, ["F1"])
         self.create_action("open-folder", self.on_open_folder_action, ["<Control>M"])
-        self.create_action("preferences", self.on_preferences_action, ["<Primary>comma"])
+        self.create_action(
+            "preferences", self.on_preferences_action, ["<Primary>comma"]
+        )
 
         self.set_accels_for_action("win.run", ["<Control>Return", "F5"])
         self.set_accels_for_action("win.stop", ["<Shift>F5"])
@@ -142,7 +144,7 @@ class PyroseApplication(Adw.Application):
 
     def on_open_folder_action(self, widget, _):
         """Callback for the app.open-folder action."""
-        path = os.environ.get("XDG_DATA_HOME", ".pyrose")
+        path = os.environ.get("XDG_STATE_HOME", ".pyrose")
         file: Gio.File = Gio.File.new_for_path(path)
         Gtk.FileLauncher.new(file).launch()
 
