@@ -88,12 +88,15 @@ class PyroseWindow(Adw.ApplicationWindow):
             cursor_iter = buffer.get_iter_at_mark(insert_mark)
             line = cursor_iter.get_line()
             column = cursor_iter.get_line_offset()
-            highlights = await self.lsp_client.requests.document_highlight(
-                {
-                    "textDocument": {"uri": self.uri},
-                    "position": {"line": line, "character": column},
-                }
-            )
+            try:
+                highlights = await self.lsp_client.requests.document_highlight(
+                    {
+                        "textDocument": {"uri": self.uri},
+                        "position": {"line": line, "character": column},
+                    }
+                )
+            except ValueError:
+                return
 
             self.code_view.highlight(highlights)
 
