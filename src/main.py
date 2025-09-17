@@ -24,6 +24,8 @@ from gi.repository import Gdk, Gtk, GtkSource, Gio, GLib, Adw, Vte  # noqa: E402
 class PyroseApplication(Adw.Application):
     """The main application singleton class."""
 
+    settings = Gio.Settings.new("io.github.vanillajonathan.pyrose")
+
     def __init__(self, version):
         super().__init__(
             application_id="io.github.vanillajonathan.pyrose",
@@ -61,8 +63,7 @@ class PyroseApplication(Adw.Application):
         new_directories += f":{user_home_dir}/.local/bin"
         os.environ["PATH"] = new_directories + ":" + os.environ["PATH"]
 
-        settings = Gio.Settings.new("io.github.vanillajonathan.pyrose")
-        if python_path := settings.get_string("python-path"):
+        if python_path := self.settings.get_string("python-path"):
             os.environ["PYTHONPATH"] = python_path
 
         self.languages = []
@@ -108,14 +109,28 @@ class PyroseApplication(Adw.Application):
             f"libvte {Vte.MAJOR_VERSION}.{Vte.MINOR_VERSION}.{Vte.MICRO_VERSION}\n"
         )
         debug_info += f"Python {platform.python_version()}\n"
+
         try:
             result = subprocess.run(["pyrefly", "--version"], capture_output=True)
-            debug_info += result.stdout.decode()
+            debug_info += result.stdout.decode() + "\n\n"
             pyrefly_installed = True
         except FileNotFoundError:
             comments += "\n\nYou should really install <a href='https://pyrefly.org/'>Pyrefly</a> for a better Python experience. See the built-in help for instructions."
-            debug_info += "The Python LSP server Pyrefly was not found"
+            debug_info += "The Python LSP server Pyrefly was not found.\n\n"
             pyrefly_installed = False
+
+        debug_info += "Environment variables:\n"
+        debug_info += f"- LANG: {os.environ.get('LANG')}\n"
+        for env in os.environ:
+            if env.startswith(("GTK_", "GDK", "PYTHON")):
+                debug_info += f"- {env}:  {os.environ.get(env)}\n"
+        debug_info += "\n"
+
+        debug_info += "Settings:\n"
+        schema = self.settings.props.settings_schema
+        for key in schema.list_keys():
+            debug_info += f"- {key}: {self.settings.get_value(key)}\n"
+
         about = Adw.AboutDialog(
             application_name="PyRose",
             application_icon="io.github.vanillajonathan.pyrose",
