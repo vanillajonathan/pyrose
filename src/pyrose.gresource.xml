@@ -8,7 +8,7 @@
     <file preprocess="xml-stripblanks">preferences.ui</file>
     <file preprocess="xml-stripblanks">symbol_chooser.ui</file>
     <file preprocess="xml-stripblanks">terminal.ui</file>
-    <file preprocess="xml-stripblanks">gtk/help-overlay.ui</file>
+    <file preprocess="xml-stripblanks" alias="shortcuts-dialog.ui">shortcuts.ui</file>
   </gresource>
   <gresource prefix="/io/github/vanillajonathan/pyrose/icons/scalable/actions/">
     <file preprocess="xml-stripblanks" alias="unfullscreen-square-symbolic.svg">../data/icons/hicolor/scalable/actions/unfullscreen-square-symbolic.svg</file>

@@ -1,0 +1,51 @@
+using Gtk 4.0;
+using Adw 1;
+
+Adw.ShortcutsDialog shortcuts_dialog {
+  Adw.ShortcutsSection {
+    title: _("General");
+
+    Adw.ShortcutsItem {
+      title: C_("shortcut window", "Quit");
+      action-name: "app.quit";
+    }
+
+    Adw.ShortcutsItem {
+      title: C_("shortcut window", "Run code");
+      action-name: "win.run";
+    }
+
+    Adw.ShortcutsItem {
+      title: C_("shortcut window", "Stop run code");
+      action-name: "win.stop";
+    }
+  }
+
+  Adw.ShortcutsSection {
+    title: C_("shortcut window", "Editor");
+
+    Adw.ShortcutsItem {
+      title: C_("shortcut window", "Search");
+      action-name: "editor.show-search";
+    }
+
+    Adw.ShortcutsItem {
+      title: C_("shortcut window", "Search and replace");
+      action-name: "editor.show-replace";
+    }
+
+    Adw.ShortcutsItem {
+      title: C_("shortcut window", "Go to line");
+      action-name: "editor.show-goto-line";
+    }
+  }
+
+  Adw.ShortcutsSection {
+    title: C_("shortcut window", "Terminal");
+
+    Adw.ShortcutsItem {
+      title: C_("shortcut window", "Find");
+      action-name: "terminal.show-search";
+    }
+  }
+}
