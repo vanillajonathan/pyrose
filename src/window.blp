@@ -64,20 +64,31 @@ template $PyroseWindow: Adw.ApplicationWindow {
       }
     }
 
-    content: Paned {
+    content: Box {
       orientation: vertical;
-      shrink-start-child: false;
-      shrink-end-child: false;
 
-      start-child: $CodeView code_view {
-        changed => $on_editor_changed();
-        cursor-moved => $on_editor_cursor_moved();
-      };
+      Adw.Banner banner {
+        button-label: _("Get Pyrefly!");
+        title: _("For a better Python experience install Pyrefly");
+        button-clicked => $on_banner_button_clicked();
+      }
 
-      end-child: $Terminal terminal {
-        bell => $on_terminal_bell();
-        child-exited => $on_child_exited();
-      };
+      Paned {
+        orientation: vertical;
+        shrink-start-child: false;
+        shrink-end-child: false;
+        vexpand: true;
+
+        start-child: $CodeView code_view {
+          changed => $on_editor_changed();
+          cursor-moved => $on_editor_cursor_moved();
+        };
+
+        end-child: $Terminal terminal {
+          bell => $on_terminal_bell();
+          child-exited => $on_child_exited();
+        };
+      }
     };
   };
 }

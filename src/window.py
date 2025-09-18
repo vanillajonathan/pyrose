@@ -23,6 +23,7 @@ logger = logging.getLogger(__name__)
 class PyroseWindow(Adw.ApplicationWindow):
     __gtype_name__ = "PyroseWindow"
 
+    banner: Adw.Banner = Gtk.Template.Child()
     code_view: CodeView = Gtk.Template.Child()
     lang_string_list: Gtk.StringList = Gtk.Template.Child()
     selected_language = GObject.Property(type=int, default=0, nick="selected_language")
@@ -64,6 +65,14 @@ class PyroseWindow(Adw.ApplicationWindow):
         self.insert_action_group("terminal", self.terminal.action_group)
 
         self.connect("unrealize", self.on_unrealize)
+
+        if not self.props.application.pyrefly_installed:
+            self.banner.set_revealed(True)
+
+    @Gtk.Template.Callback()
+    def on_banner_button_clicked(self, banner: Adw.Banner) -> None:
+        banner.set_revealed(False)
+        Gtk.show_uri(self, "help:pyrose/python", Gdk.CURRENT_TIME)
 
     @Gtk.Template.Callback()
     def on_editor_changed(self, code_view: CodeView, buffer: GtkSource.Buffer):
