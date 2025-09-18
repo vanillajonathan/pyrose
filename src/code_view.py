@@ -44,13 +44,9 @@ class CodeView(Gtk.Widget):
         self.search_settings = GtkSource.SearchSettings()
 
         actions = (
-            ("goto-line", self.goto_line),
             ("show-goto-line", self.reveal_goto),
             ("show-search", self.reveal_search),
             ("show-replace", self.reveal_replace),
-            ("search-prev", self.search_prev),
-            ("search-next", self.search_next),
-            ("search-hide", self.search_hide),
         )
 
         action_group = Gio.SimpleActionGroup()
@@ -59,9 +55,14 @@ class CodeView(Gtk.Widget):
             action.connect("activate", callback)
             action_group.add_action(action)
 
-        action_group.lookup_action("search-next").set_enabled(False)
-        action_group.lookup_action("search-prev").set_enabled(False)
         self.action_group = action_group
+
+        self.install_action("editor.goto-line", None, self.goto_line)
+        self.install_action("editor.search-hide", None, self.search_hide)
+        self.install_action("editor.search-next", None, self.search_next)
+        self.install_action("editor.search-prev", None, self.search_prev)
+        self.action_set_enabled("editor.search-next", False)
+        self.action_set_enabled("editor.search-prev", False)
 
         Adw.StyleManager.get_default().bind_property(
             "dark",
@@ -222,7 +223,7 @@ class CodeView(Gtk.Widget):
     @Gtk.Template.Callback()
     def on_search_entry_activate(self, entry: Gtk.Entry):
         if entry.get_text():
-            self.search_next(None, None)
+            self.search_next(None, None, None)
         self.search_revealer.set_reveal_child(False)
         self.sourceview.grab_focus()
 
@@ -246,16 +247,16 @@ class CodeView(Gtk.Widget):
         )
         self.search_context.forward(self.buffer.get_start_iter())
         if self.search_context.get_occurrences_count() == -1:
-            self.action_group.lookup_action("search-prev").set_enabled(False)
-            self.action_group.lookup_action("search-next").set_enabled(False)
+            self.action_set_enabled("editor.search-next", False)
+            self.action_set_enabled("editor.search-prev", False)
         elif self.search_context.get_occurrences_count() == 0:
             self.search_entry.get_style_context().add_class("error")
-            self.action_group.lookup_action("search-prev").set_enabled(False)
-            self.action_group.lookup_action("search-next").set_enabled(False)
+            self.action_set_enabled("editor.search-next", False)
+            self.action_set_enabled("editor.search-prev", False)
         else:
             self.search_entry.get_style_context().remove_class("error")
-            self.action_group.lookup_action("search-prev").set_enabled(True)
-            self.action_group.lookup_action("search-next").set_enabled(True)
+            self.action_set_enabled("editor.search-next", True)
+            self.action_set_enabled("editor.search-prev", True)
             cursor_iter = self.buffer.get_iter_at_mark(self.buffer.get_insert())
             found, start_iter, end_iter, wrapped = self.search_context.forward(
                 cursor_iter
@@ -335,7 +336,7 @@ class CodeView(Gtk.Widget):
 
             self.buffer.apply_tag_by_name("highlight", start_iter, end_iter)
 
-    def goto_line(self, action, parameter):
+    def goto_line(self, widget, action, parameter):
         line, column = 0, 0
         try:
             line, column = self.goto_line_entry.get_text().split(":")
@@ -367,13 +368,13 @@ class CodeView(Gtk.Widget):
         self.replace_mode = True
         self.reveal_search(action, parameter)
 
-    def search_hide(self, action, parameter):
+    def search_hide(self, widget, action, parameter):
         self.replace_mode = False
         self.search_settings.set_search_text(None)
         self.search_revealer.set_reveal_child(False)
         self.sourceview.grab_focus()
 
-    def search_prev(self, action, parameter):
+    def search_prev(self, widget, action, parameter):
         if not self.search_context:
             return
         current_pos_iter = self.buffer.get_iter_at_mark(self.buffer.get_insert())
@@ -383,7 +384,7 @@ class CodeView(Gtk.Widget):
             self.buffer.place_cursor(start)
             self.sourceview.scroll_to_iter(start, 0.1, False, 0, 0)
 
-    def search_next(self, action, parameter):
+    def search_next(self, widget, action, parameter):
         if not self.search_context:
             return
         current_pos_iter = self.buffer.get_iter_at_mark(self.buffer.get_insert())
@@ -398,10 +399,12 @@ class CodeView(Gtk.Widget):
         if bounds:
             start_iter, end_iter = bounds
             text = self.replace_entry.get_text()
+            assert self.search_context is not None
             self.search_context.replace(start_iter, end_iter, text, -1)
 
     def replace_all(self, widget, action: str, parameter):
         text = self.replace_entry.get_text()
+        assert self.search_context is not None
         self.search_context.replace_all(text, -1)
 
     def insert_symbol(self, view, action, parameter):
