@@ -1,4 +1,4 @@
-target-version = "py312"  # Flatpak runtime: org.gnome.Platform 48
+target-version = "py313"  # Flatpak runtime: org.gnome.Platform 49
 
 [lint]
 extend-select = [

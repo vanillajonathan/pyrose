@@ -142,7 +142,7 @@ class JsonRpcDispatcher:
                     self.on_notification(message["method"], message.get("params"))
         return
 
-    async def _read_messages(self) -> AsyncGenerator[Any, None]:
+    async def _read_messages(self) -> AsyncGenerator[Any]:
         while not self._reader.at_eof():
             headers = {}
             while True:
