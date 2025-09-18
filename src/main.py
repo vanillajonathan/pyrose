@@ -2,23 +2,20 @@ import asyncio
 
 # import logging
 import os
-import platform
 import shutil
-import subprocess
 import sys
 import gi
 
 from gettext import gettext as _
-from gi.events import GLibEventLoopPolicy
+from gi.events import GLibEventLoopPolicy  # pyrefly: ignore[import-error]
+from .helpers import get_debug_info
 from .preferences import PreferencesDialog
 from .window import PyroseWindow
 
 gi.require_version("Adw", "1")
 gi.require_version("Gdk", "4.0")
 gi.require_version("Gtk", "4.0")
-gi.require_version("GtkSource", "5")
-gi.require_version("Vte", "3.91")
-from gi.repository import Gdk, Gtk, GtkSource, Gio, GLib, Adw, Vte  # noqa: E402
+from gi.repository import Adw, Gdk, Gio, Gtk  # noqa: E402
 
 
 class PyroseApplication(Adw.Application):
@@ -77,6 +74,8 @@ class PyroseApplication(Adw.Application):
         if shutil.which("ruby"):
             self.languages.append(("Ruby", "ruby", ".rb", "ruby", ["-e"]))
 
+        self.pyrefly_installed = bool(shutil.which("pyrefly"))
+
     def do_activate(self):
         """Called when the application is activated.
 
@@ -90,61 +89,22 @@ class PyroseApplication(Adw.Application):
 
     def on_about_action(self, *args):
         """Callback for the app.about action."""
-        comments = "Playground for programmers."
-        debug_info = f"PyRose {self.props.version}\n\n"
-        debug_info += f"{GLib.get_os_info('PRETTY_NAME')}\n"
-        debug_info += (
-            f"GLib {GLib.MAJOR_VERSION}.{GLib.MINOR_VERSION}.{GLib.MICRO_VERSION}\n"
-        )
-        debug_info += (
-            f"GTK {Gtk.MAJOR_VERSION}.{Gtk.MINOR_VERSION}.{Gtk.MICRO_VERSION}\n"
-        )
-        debug_info += f"GtkSourceView {GtkSource.MAJOR_VERSION}.{GtkSource.MINOR_VERSION}.{GtkSource.MICRO_VERSION}\n"
-
-        debug_info += "PyGObject {}.{}.{}\n".format(*gi.version_info)
-        debug_info += (
-            f"libadwaita {Adw.MAJOR_VERSION}.{Adw.MINOR_VERSION}.{Adw.MICRO_VERSION}\n"
-        )
-        debug_info += (
-            f"libvte {Vte.MAJOR_VERSION}.{Vte.MINOR_VERSION}.{Vte.MICRO_VERSION}\n"
-        )
-        debug_info += f"Python {platform.python_version()}\n"
-
-        try:
-            result = subprocess.run(["pyrefly", "--version"], capture_output=True)
-            debug_info += result.stdout.decode() + "\n\n"
-            pyrefly_installed = True
-        except FileNotFoundError:
-            comments += "\n\nYou should really install <a href='https://pyrefly.org/'>Pyrefly</a> for a better Python experience. See the built-in help for instructions."
-            debug_info += "The Python LSP server Pyrefly was not found.\n\n"
-            pyrefly_installed = False
-
-        debug_info += "Environment variables:\n"
-        debug_info += f"- LANG: {os.environ.get('LANG')}\n"
-        for env in os.environ:
-            if env.startswith(("GTK_", "GDK", "PYTHON")):
-                debug_info += f"- {env}:  {os.environ.get(env)}\n"
-        debug_info += "\n"
-
-        debug_info += "Settings:\n"
-        schema = self.settings.props.settings_schema
-        for key in schema.list_keys():
-            debug_info += f"- {key}: {self.settings.get_value(key)}\n"
-
         about = Adw.AboutDialog(
             application_name="PyRose",
             application_icon="io.github.vanillajonathan.pyrose",
             developer_name="Jonathan",
             developers=["Jonathan"],
             copyright="© 2025 Jonathan",
-            debug_info=debug_info,
+            debug_info=get_debug_info(self.props.version, self.settings),
             issue_url="https://github.com/vanillajonathan/pyrose/issues",
             license_type=Gtk.License.MIT_X11,
             version=f"{self.props.version}",
             website="https://github.com/vanillajonathan/pyrose",
         )
-        if not pyrefly_installed:
+        comments = "Playground for programmers."
+        if not self.pyrefly_installed:
             about.add_link("Pyrefly", "https://pyrefly.org/")
+            comments += "\n\nYou should really install <a href='https://pyrefly.org/'>Pyrefly</a> for a better Python experience. See the built-in help for instructions."
         about.set_comments(comments)
         # Translators: Replace "translator-credits" with your name/username, and optionally an email or URL.
         about.set_translator_credits(_("translator-credits"))
