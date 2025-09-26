@@ -9,6 +9,7 @@ from lsp_types import (
     DocumentHighlight,
     PublishDiagnosticsParams,
 )
+from .ide_scrollbar import IdeScrollbar
 from .symbol_chooser import SymbolChooser
 
 gi.require_version("Adw", "1")
@@ -23,6 +24,7 @@ class CodeView(Gtk.Widget):
     __gtype_name__ = "CodeView"
 
     buffer: GtkSource.Buffer = Gtk.Template.Child()
+    scrollbar: IdeScrollbar = Gtk.Template.Child()
     sourceview: GtkSource.View = Gtk.Template.Child()
     symbol_chooser: SymbolChooser = Gtk.Template.Child()
     position_label: Gtk.Label = Gtk.Template.Child()
@@ -37,6 +39,7 @@ class CodeView(Gtk.Widget):
 
     def __init__(self):
         super().__init__()
+        GObject.type_ensure(IdeScrollbar)
         GObject.type_ensure(SymbolChooser)
         self.animate_fade_task: Task | None = None
         self.languages = []
@@ -190,6 +193,7 @@ class CodeView(Gtk.Widget):
 
     @Gtk.Template.Callback()
     def on_editor_cursor_moved(self, buffer: GtkSource.Buffer):
+        self.scrollbar.queue_draw()
         self.sourceview.get_completion().hide()
         insert_mark = buffer.get_insert()
         cursor_iter = buffer.get_iter_at_mark(insert_mark)
@@ -271,6 +275,7 @@ class CodeView(Gtk.Widget):
 
     def apply_diagnostics(self, params: PublishDiagnosticsParams) -> None:
         self.clear_diagnostics()
+        self.scrollbar.update_chunks(params)
         for diagnostic in params["diagnostics"]:
             start_line = diagnostic["range"]["start"]["line"]
             start_char = diagnostic["range"]["start"]["character"]
@@ -308,6 +313,7 @@ class CodeView(Gtk.Widget):
                         )
 
     def clear_diagnostics(self) -> None:
+        self.scrollbar.update_chunks([])
         tags = ["error", "warning", "information", "hint", "deprecated"]
         start_iter = self.buffer.get_start_iter()
         end_iter = self.buffer.get_end_iter()

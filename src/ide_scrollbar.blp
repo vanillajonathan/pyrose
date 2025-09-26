@@ -1,0 +1,18 @@
+using Gtk 4.0;
+
+template $IdeScrollbar: Widget {
+  layout-manager: BinLayout {};
+
+  Scrollbar scrollbar {
+    orientation: vertical;
+
+    EventControllerMotion {
+      enter => $on_motion_enter();
+      leave => $on_motion_leave();
+    }
+
+    styles [
+      "overlay-indicator",
+    ]
+  }
+}
