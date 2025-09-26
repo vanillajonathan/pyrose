@@ -114,7 +114,7 @@ class Terminal(Gtk.Widget):
     async def spawn(self, program: str, args: list[str], code: str) -> int:
         """Spawn a process."""
 
-        def spawn_callback(terminal, pid: int, error: GLib.GError):
+        def spawn_callback(terminal, pid: int, error: GLib.GError, user_data):
             if error:
                 self.terminal.feed(f"{error.message}\r\n".encode())
                 future.set_exception(RuntimeError(error))
