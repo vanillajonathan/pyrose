@@ -10,6 +10,7 @@ from gettext import gettext as _
 from gi.events import GLibEventLoopPolicy  # pyrefly: ignore[import-error]
 from .helpers import get_debug_info
 from .preferences import PreferencesDialog
+from .shared import Lang
 from .window import PyroseWindow
 
 gi.require_version("Adw", "1")
@@ -63,16 +64,16 @@ class PyroseApplication(Adw.Application):
         if python_path := self.settings.get_string("python-path"):
             os.environ["PYTHONPATH"] = python_path
 
-        self.languages = []
+        self.languages: list[Lang] = []
         self.languages.append(
-            ("Python", "python3", ".py", sys.executable, ["-B", "-c"])
+            Lang("Python", "python3", ".py", sys.executable, ["-B", "-c"])
         )
         if shutil.which("perl"):
-            self.languages.append(("Perl", "perl", ".pl", "perl", ["-W"]))
+            self.languages.append(Lang("Perl", "perl", ".pl", "perl", ["-W"]))
         if shutil.which("gjs"):
-            self.languages.append(("JavaScript (GJS)", "js", ".js", "gjs", ["-c"]))
+            self.languages.append(Lang("JavaScript (GJS)", "js", ".js", "gjs", ["-c"]))
         if shutil.which("ruby"):
-            self.languages.append(("Ruby", "ruby", ".rb", "ruby", ["-e"]))
+            self.languages.append(Lang("Ruby", "ruby", ".rb", "ruby", ["-e"]))
 
         self.pyrefly_installed = bool(shutil.which("pyrefly"))
 

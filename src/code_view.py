@@ -10,6 +10,7 @@ from lsp_types import (
     PublishDiagnosticsParams,
 )
 from .ide_scrollbar import IdeScrollbar
+from .shared import Lang
 from .symbol_chooser import SymbolChooser
 
 gi.require_version("Adw", "1")
@@ -42,7 +43,7 @@ class CodeView(Gtk.Widget):
         GObject.type_ensure(IdeScrollbar)
         GObject.type_ensure(SymbolChooser)
         self.animate_fade_task: Task | None = None
-        self.languages = []
+        self.languages: list[Lang] = []
         self.search_context: GtkSource.SearchContext | None = None
         self.search_settings = GtkSource.SearchSettings()
 
@@ -156,8 +157,8 @@ class CodeView(Gtk.Widget):
         self, target: Gtk.DropTarget, value, _x: float, _y: float
     ) -> bool:
         def is_extension_supported(extension):
-            for item in self.languages:
-                if item[2] == extension:
+            for language in self.languages:
+                if language.extension == extension:
                     return True
 
         extension = os.path.splitext(value.get_basename())[1]
@@ -174,9 +175,9 @@ class CodeView(Gtk.Widget):
 
     def _set_file(self, file) -> None:
         def get_language_id(extension):
-            for item in self.languages:
-                if item[2] == extension:
-                    return item[1]
+            for language in self.languages:
+                if language.extension == extension:
+                    return language.highlight
             return ""
 
         with open(file) as f:

@@ -9,6 +9,7 @@ from .lsp_client import LspClient, start_lsp_process
 from .completion_provider import CompletionProvider
 from .hover_provider import HoverProvider
 from .helpers import get_initialize_params
+from .shared import Lang
 from .terminal import Terminal
 
 gi.require_version("Adw", "1")
@@ -39,14 +40,14 @@ class PyroseWindow(Adw.ApplicationWindow):
         self.lsp_client: LspClient | None = None
         self.completion_provider: CompletionProvider | None = None
         self.hover_provider: HoverProvider | None = None
-        self.languages = languages
+        self.languages: list[Lang] = languages
         self.code_view.languages = languages
 
         if self.props.application.props.application_id.endswith(".devel"):
             self.add_css_class("devel")
 
         for language in languages:
-            self.lang_string_list.append(language[0])
+            self.lang_string_list.append(language.name)
 
         action = Gio.SimpleAction(name="run")
         action.connect("activate", self.on_run_activated)
@@ -132,8 +133,8 @@ class PyroseWindow(Adw.ApplicationWindow):
     def on_run_activated(self, action, parameter):
         action.set_enabled(False)
         language = self.languages[self.selected_language]
-        program = language[3]
-        args = language[4]
+        program = language.interpreter
+        args = language.args
         self.run(action, program, args)
 
     @Gtk.Template.Callback()
@@ -179,11 +180,11 @@ class PyroseWindow(Adw.ApplicationWindow):
         self.terminal.terminate()
 
     def set_language(self, language: str) -> None:
-        def get_language_id(language):
-            for item in self.languages:
-                if item[0] == language:
-                    return item[1]
-            return ""
+        def get_language(language_name) -> Lang:
+            for language in self.languages:
+                if language.name == language_name:
+                    return language
+            raise ValueError(f"Language {language_name} not found")
 
         async def start_lsp(uri):
             try:
@@ -228,14 +229,14 @@ class PyroseWindow(Adw.ApplicationWindow):
 
         self.code_view.clear_diagnostics()
         language_manager = GtkSource.LanguageManager.get_default()
-        source_language = language_manager.get_language(get_language_id(language))
+        lang = get_language(language)
+        source_language = language_manager.get_language(lang.highlight)
         self.code_view.buffer.set_language(source_language)
         # print(language_manager.get_language_ids())
 
         base_dir = os.environ.get("XDG_STATE_HOME", ".pyrose")
-        buffer_file = os.path.join(base_dir, "buffer.txt")
-        uri = f"file://{buffer_file}"
-        self.uri: DocumentUri = uri
+        self.buffer_file = os.path.join(base_dir, f"buffer{lang.extension}")
+        self.uri: DocumentUri = f"file://{self.buffer_file}"
 
         pyproject_file = os.path.join(base_dir, "pyproject.toml")
         if not os.path.exists(pyproject_file):
@@ -245,11 +246,11 @@ class PyroseWindow(Adw.ApplicationWindow):
         if source_language and source_language.props.id == "python3":
             self.get_application().create_asyncio_task(start_lsp(self.uri))
 
-        if not os.path.exists(buffer_file):
-            with open(buffer_file, "w") as f:
+        if not os.path.exists(self.buffer_file):
+            with open(self.buffer_file, "w") as f:
                 f.write("")
 
-        with open(buffer_file) as f:
+        with open(self.buffer_file) as f:
             self.code_view.buffer.props.text = f.read()
 
     def on_lsp_notification(self, method: str, params) -> None:
@@ -303,8 +304,6 @@ class PyroseWindow(Adw.ApplicationWindow):
 
     def save_buffer(self):
         if self.code_view.buffer.get_modified():
-            base_dir = os.environ.get("XDG_STATE_HOME", ".pyrose")
-            buffer_file = os.path.join(base_dir, "buffer.txt")
-            with open(buffer_file, "w") as f:
+            with open(self.buffer_file, "w") as f:
                 f.write(self.code_view.buffer.props.text)
             self.code_view.buffer.set_modified(False)

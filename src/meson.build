@@ -52,6 +52,7 @@ pyrose_sources = [
   'lsp_client.py',
   'pango_utils.py',
   'preferences.py',
+  'shared.py',
   'symbol_chooser.py',
   'terminal.py'
 ]
