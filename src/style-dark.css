@@ -2,3 +2,6 @@
   --headerbar-bell-oklch: 0.42 calc(c * 0.6) h;
 }
 
+popover.symbol-picker flowboxchild:focus, popover.symbol-picker flowboxchild:hover {
+  background-color: oklch(from var(--dark-2) calc(l - 0.08) c h);
+}

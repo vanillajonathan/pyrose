@@ -31,14 +31,14 @@ vte-terminal {
   opacity: 1;
 }
 
-popover flowboxchild {
+popover.symbol-picker flowboxchild {
   font-size: x-large;
   padding: 6px;
   border-radius: 6px;
 }
 
-popover flowboxchild:focus, popover flowboxchild:hover {
-  background-color: var(--popover-shade-color);
+popover.symbol-picker flowboxchild:focus, popover.symbol-picker flowboxchild:hover {
+  background-color: oklch(from var(--light-2) calc(l - 0.06) c h);
 }
 
 .css_text {

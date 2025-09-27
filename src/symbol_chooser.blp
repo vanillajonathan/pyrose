@@ -1,6 +1,10 @@
 using Gtk 4.0;
 
 template $SymbolChooser: Popover {
+  styles [
+    "symbol-picker"
+  ]
+
   child: ScrolledWindow {
     vexpand: true;
     hscrollbar-policy: never;
