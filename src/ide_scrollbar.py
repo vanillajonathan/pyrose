@@ -1,3 +1,4 @@
+# https://github.com/GNOME/gnome-builder/blob/main/src/libide/editor/ide-scrollbar.c
 import gi
 
 gi.require_version("Gtk", "4.0")
@@ -43,7 +44,7 @@ class IdeScrollbar(Gtk.Widget):
         style_manager.connect("notify::dark", on_color_scheme_changed)
         style_manager.notify("dark")
 
-    @GObject.Property(type=GtkSource.View)
+    @GObject.Property(type=GtkSource.View, flags=GObject.ParamFlags.READWRITE)
     def view(self) -> GtkSource.View:
         return self._view
 
@@ -51,7 +52,10 @@ class IdeScrollbar(Gtk.Widget):
     def view(self, view: GtkSource.View):
         self._buffer = view.get_buffer()
         self._view = view
-        self.scrollbar.set_adjustment(view.get_vadjustment())
+
+        v_adjustment = view.get_vadjustment()
+        # Trying to snapshot GtkGizmo 0x62c940016f60 without a current allocation
+        self.scrollbar.set_adjustment(v_adjustment)
 
     @Gtk.Template.Callback()
     def on_motion_enter(self, widget: Gtk.EventControllerMotion, x, y):
@@ -87,6 +91,7 @@ class IdeScrollbar(Gtk.Widget):
         cursor_line = textiter.get_line()
 
         if cursor_line >= 0 and cursor_line < total_lines:
+            line_height = min(line_height, 18)  # ugh, dirty workaround
             cursor_y = top_margin + cursor_line * line_height
             bounds = Graphene.Rect().init(0, cursor_y, width, max(int(line_height), 2))
             snapshot.append_color(self._cursor_color, bounds)
