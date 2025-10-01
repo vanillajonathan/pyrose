@@ -96,6 +96,14 @@ template $PyroseWindow: Adw.ApplicationWindow {
             hexpand: true;
 
             Adw.ViewStackPage {
+              icon-name: "info-outline-symbolic";
+              title: "Diagnostics";
+              name: "diagnostics";
+
+              child: $DiagnosticsView diagnostics_view {};
+            }
+
+            Adw.ViewStackPage {
               icon-name: "terminal-symbolic";
               title: "Terminal";
               name: "terminal";
@@ -104,14 +112,6 @@ template $PyroseWindow: Adw.ApplicationWindow {
                 bell => $on_terminal_bell();
                 child-exited => $on_child_exited();
               };
-            }
-
-            Adw.ViewStackPage {
-              icon-name: "logs-symbolic";
-              title: "Diagnostics";
-              name: "diagnostics";
-
-              child: $DiagnosticsView diagnostics_view {};
             }
           }
         };

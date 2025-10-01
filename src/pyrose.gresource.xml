@@ -16,7 +16,6 @@
     <file preprocess="xml-stripblanks" alias="unfullscreen-square-symbolic.svg">../data/icons/hicolor/scalable/actions/unfullscreen-square-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="circle-outline-thick-symbolic.svg">../data/icons/hicolor/scalable/actions/circle-outline-thick-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="edit-find-replace-symbolic.svg">../data/icons/hicolor/scalable/actions/edit-find-replace-symbolic.svg</file>
-    <file preprocess="xml-stripblanks" alias="logs-symbolic.svg">../data/icons/hicolor/scalable/actions/logs-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="terminal-symbolic.svg">../data/icons/hicolor/scalable/actions/terminal-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="exclamation-mark-symbolic.svg">../data/icons/hicolor/scalable/actions/exclamation-mark-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="info-outline-symbolic.svg">../data/icons/hicolor/scalable/actions/info-outline-symbolic.svg</file>
