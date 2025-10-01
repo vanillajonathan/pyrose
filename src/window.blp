@@ -84,9 +84,36 @@ template $PyroseWindow: Adw.ApplicationWindow {
           cursor-moved => $on_editor_cursor_moved();
         };
 
-        end-child: $Terminal terminal {
-          bell => $on_terminal_bell();
-          child-exited => $on_child_exited();
+        end-child: Gtk.Box {
+          Adw.InlineViewSwitcher {
+            display-mode: icons;
+            orientation: vertical;
+            stack: stack;
+            valign: start;
+          }
+
+          Adw.ViewStack stack {
+            hexpand: true;
+
+            Adw.ViewStackPage {
+              icon-name: "terminal-symbolic";
+              title: "Terminal";
+              name: "terminal";
+
+              child: $Terminal terminal {
+                bell => $on_terminal_bell();
+                child-exited => $on_child_exited();
+              };
+            }
+
+            Adw.ViewStackPage {
+              icon-name: "logs-symbolic";
+              title: "Diagnostics";
+              name: "diagnostics";
+
+              child: $DiagnosticsView diagnostics_view {};
+            }
+          }
         };
       }
     };

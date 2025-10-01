@@ -1,0 +1,41 @@
+using Gtk 4.0;
+using Gio 2.0;
+
+template $DiagnosticsView: Widget {
+  layout-manager: BinLayout {};
+
+  ScrolledWindow {
+    vexpand: true;
+    hscrollbar-policy: never;
+    propagate-natural-height: true;
+    max-content-height: 320;
+
+    child: ListView {
+      factory: BuilderListItemFactory {
+        template ListItem {
+          child: Gtk.Box {
+            Image {
+              css-classes: bind template.item as <$DiagnosticMessage>.css_classes;
+              icon-name: bind template.item as <$DiagnosticMessage>.icon_name;
+            }
+
+            Gtk.Label {
+              label: bind template.item as <$DiagnosticMessage>.message;
+              margin-start: 12;
+              margin-end: 12;
+              wrap: true;
+            }
+          };
+        }
+      };
+
+      model: SingleSelection {
+        autoselect: false;
+
+        model: Gio.ListStore messages {
+          item-type: typeof<$DiagnosticMessage>;
+        };
+      };
+    };
+  }
+}

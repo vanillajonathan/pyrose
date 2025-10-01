@@ -5,6 +5,7 @@ import gi
 
 from lsp_types import DocumentUri, MessageType
 from .code_view import CodeView
+from .diagnostics_view import DiagnosticsView
 from .lsp_client import LspClient, start_lsp_process
 from .completion_provider import CompletionProvider
 from .hover_provider import HoverProvider
@@ -26,10 +27,12 @@ class PyroseWindow(Adw.ApplicationWindow):
 
     banner: Adw.Banner = Gtk.Template.Child()
     code_view: CodeView = Gtk.Template.Child()
+    diagnostics_view: DiagnosticsView = Gtk.Template.Child()
     lang_string_list: Gtk.StringList = Gtk.Template.Child()
     selected_language = GObject.Property(type=int, default=0, nick="selected_language")
     header_bar: Adw.HeaderBar = Gtk.Template.Child()
     unfullscreen_button: Gtk.Button = Gtk.Template.Child()
+    stack: Adw.ViewStack = Gtk.Template.Child()
     terminal: Terminal = Gtk.Template.Child()
 
     def __init__(self, languages, **kwargs):
@@ -132,6 +135,7 @@ class PyroseWindow(Adw.ApplicationWindow):
 
     def on_run_activated(self, action, parameter):
         action.set_enabled(False)
+        self.stack.set_visible_child_name("terminal")
         language = self.languages[self.selected_language]
         program = language.interpreter
         args = language.args
@@ -263,6 +267,7 @@ class PyroseWindow(Adw.ApplicationWindow):
                 pass
             case "textDocument/publishDiagnostics":
                 self.code_view.apply_diagnostics(params)
+                self.diagnostics_view.set_messages(params)
                 return
             case "$/progress":
                 # token, value
