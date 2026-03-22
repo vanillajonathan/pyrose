@@ -46,9 +46,9 @@
 
   <section>
     <title>Paths</title>
-    <p><app>PyRose</app> looks for interpreters and LSP clients in the following locations:</p>
+    <p><app>PyRose</app> looks for interpreters and LSP servers in the following locations:</p>
     <list>
-      <item><p><file>/app/bin</file></p></item>
+      <item><p><file>/app/bin</file> (Flatpak)</p></item>
       <item><p><file>/usr/bin</file></p></item>
       <item><p><file>/home/<em>username</em>/.cargo/bin</file></p></item>
       <item><p><file>/home/<em>username</em>/.local/bin</file></p></item>

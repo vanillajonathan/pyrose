@@ -13,6 +13,7 @@ def markdown_to_pango(markdown: str) -> str:
     in_code_block = False
 
     for line in lines:
+        line = line.replace("&nbsp;", " ")
         if line.startswith("```"):
             language = line[3:]
             line = ""
