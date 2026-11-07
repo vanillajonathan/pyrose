@@ -58,12 +58,10 @@
   <releases>
     <release version="1.1.0" date="2026-11-07">
       <description translate="no">
-        <p>PyRose now uses GNOME 51 and includes the Pyrefly language server, so code completion, hover information and diagnostics work without installing anything else.</p>
+        <p>PyRose now includes the Pyrefly language server, so code completion, hover information and diagnostics work for Python without installing anything else.</p>
         <ul>
-          <li>Fixed the terminal not loading</li>
-          <li>Fixed a crash when pressing Enter in the go-to-line entry</li>
-          <li>Fixed completions in buffers without a language</li>
-          <li>Dark style now uses the modern stylesheet format</li>
+          <li>Updated to GNOME 51</li>
+          <li>Fixed pressing Enter in the go-to-line entry doing nothing</li>
         </ul>
       </description>
     </release>

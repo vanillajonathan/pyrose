@@ -13,8 +13,4 @@ PyRose is a playground for programmers.
 
 [![Download on Flathub](https://flathub.org/api/badge?svg&locale=en)](https://flathub.org/apps/details/io.github.vanillajonathan.pyrose)
 
-## Install Pyrefly
-
-For a better PyRose experience with Python install [Pyrefly](https://pyrefly.org/).
-
-    uv tool install pyrefly --force
+PyRose includes the [Pyrefly](https://pyrefly.org/) language server for Python.
