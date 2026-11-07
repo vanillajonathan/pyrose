@@ -2,7 +2,6 @@
 <gresources>
   <gresource prefix="/io/github/vanillajonathan/pyrose">
     <file compressed="true">style.css</file>
-    <file compressed="true">style-dark.css</file>
     <file preprocess="xml-stripblanks">window.ui</file>
     <file preprocess="xml-stripblanks">code_view.ui</file>
     <file preprocess="xml-stripblanks">diagnostics_view.ui</file>
