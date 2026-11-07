@@ -10,6 +10,12 @@ gi.require_version("Gtk", "4.0")
 gi.require_version("Vte", "3.91")
 from gi.repository import Gio, GLib, GObject, Gtk, Vte
 
+# GtkBuilder can only create VteTerminal from terminal.ui once its GType is
+# registered. Do it at import time: the template is built during object
+# construction (before __init__ runs), and since Python 3.14 the
+# `terminal: Vte.Terminal` class annotation no longer triggers it implicitly.
+GObject.type_ensure(Vte.Terminal)
+
 
 @Gtk.Template(resource_path="/io/github/vanillajonathan/pyrose/terminal.ui")
 class Terminal(Gtk.Widget):
@@ -22,7 +28,6 @@ class Terminal(Gtk.Widget):
 
     def __init__(self):
         super().__init__()
-        GObject.type_ensure(Vte.Terminal)
         self.animate_fade_task: Task | None = None
         self.pid: int | None = None
 
