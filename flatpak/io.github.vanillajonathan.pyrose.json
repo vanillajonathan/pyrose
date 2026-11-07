@@ -36,8 +36,8 @@
                 {
                     "type": "git",
                     "url": "https://github.com/vanillajonathan/pyrose.git",
-                    "tag": "v1.0.2",
-                    "commit": "1c7d14d37fa4accad78a1f1a60bbae39c2646a4c",
+                    "tag": "v1.1.0",
+                    "commit": "af476e949fba40ab17c307a78eeed3c8020f0d74",
                     "x-checker-data": {
                         "type": "git",
                         "tag-pattern": "^v([\\d.]+)$"
