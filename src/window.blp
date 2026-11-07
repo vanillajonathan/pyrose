@@ -97,7 +97,7 @@ template $PyroseWindow: Adw.ApplicationWindow {
 
             Adw.ViewStackPage {
               icon-name: "info-outline-symbolic";
-              title: "Diagnostics";
+              title: _("Diagnostics");
               name: "diagnostics";
 
               child: $DiagnosticsView diagnostics_view {};
@@ -105,7 +105,7 @@ template $PyroseWindow: Adw.ApplicationWindow {
 
             Adw.ViewStackPage {
               icon-name: "terminal-symbolic";
-              title: "Terminal";
+              title: _("Terminal");
               name: "terminal";
 
               child: $Terminal terminal {
