@@ -12,7 +12,7 @@
         "--device=dri",
         "--socket=fallback-x11",
         "--socket=wayland",
-        "--filesystem=~/.local:ro"
+        "--filesystem=~/.local/bin:ro"
     ],
     "cleanup": [
         "/include",

@@ -24,7 +24,7 @@ subprocess.run(
         "--device=dri",
         "--socket=fallback-x11",
         "--socket=wayland",
-        "--filesystem=~/.local:ro",
+        "--filesystem=~/.local/bin:ro",
         "--env=PATH=/app/bin:/usr/bin",
         "--talk-name=org.freedesktop.portal.*",
         f"--bind-mount=/run/host/font-dirs.xml={home}/.cache/font-dirs.xml",
