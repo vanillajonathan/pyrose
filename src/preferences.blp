@@ -3,14 +3,27 @@ using Adw 1;
 
 template $PreferencesDialog: Adw.PreferencesDialog {
   Adw.PreferencesPage {
+    title: _("General");
+
     Adw.PreferencesGroup {
       title: _("Python");
-      description: _("The <tt>PYTHONPATH</tt> environment variable is used to augment the default search path for module files.");
+      description: _(
+        "The <tt>PYTHONPATH</tt> environment variable is used to augment the default search path for module files."
+      );
 
       Adw.EntryRow python_path_entry {
         title: _("PYTHONPATH environment variable");
         show-apply-button: true;
         apply => $on_apply();
+      }
+    }
+
+    Adw.PreferencesGroup {
+      title: _("Behavior");
+
+      Adw.SwitchRow restore_session_row {
+        title: _("Restore session");
+        subtitle: _("Keep your code from the previous session when PyRose starts");
       }
     }
   }

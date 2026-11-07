@@ -21,7 +21,7 @@ if TYPE_CHECKING:
 gi.require_version("Adw", "1")
 gi.require_version("GtkSource", "5")
 gi.require_version("Vte", "3.91")
-from gi.repository import Adw, Gdk, Gio, GObject, Gtk, GtkSource
+from gi.repository import Adw, Gdk, Gio, GLib, GObject, Gtk, GtkSource
 
 logger = logging.getLogger(__name__)
 
@@ -59,6 +59,10 @@ class PyroseWindow(Adw.ApplicationWindow):
         self.hover_provider: HoverProvider | None = None
         self.languages: list[Lang] = languages
         self.code_view.languages = languages
+        # Read once so toggling the preference takes effect on the next start.
+        self.restore_session = self.app.settings.get_boolean("restore-session")
+        # In-memory buffers per language, used when not restoring the session.
+        self.session_buffers: dict[str, str] = {}
 
         if (self.app.props.application_id or "").endswith(".devel"):
             self.add_css_class("devel")
@@ -251,7 +255,10 @@ class PyroseWindow(Adw.ApplicationWindow):
         self.code_view.buffer.set_language(source_language)
         # print(language_manager.get_language_ids())
 
-        base_dir = os.environ.get("XDG_STATE_HOME", ".pyrose")
+        base_dir = os.environ.get(
+            "XDG_STATE_HOME", os.path.join(GLib.get_user_state_dir(), "pyrose")
+        )
+        os.makedirs(base_dir, exist_ok=True)
         self.buffer_file = os.path.join(base_dir, f"buffer{lang.extension}")
         self.uri: DocumentUri = f"file://{self.buffer_file}"
 
@@ -269,12 +276,17 @@ class PyroseWindow(Adw.ApplicationWindow):
                 args = ["server"]
             self.app.create_asyncio_task(start_lsp(lsp, args, self.uri))
 
-        if not os.path.exists(self.buffer_file):
-            with open(self.buffer_file, "w") as f:
-                f.write("")
+        if self.restore_session:
+            if not os.path.exists(self.buffer_file):
+                with open(self.buffer_file, "w") as f:
+                    f.write("")
 
-        with open(self.buffer_file) as f:
-            self.code_view.buffer.props.text = f.read()
+            with open(self.buffer_file) as f:
+                text = f.read()
+        else:
+            text = self.session_buffers.get(self.buffer_file, "")
+
+        self.code_view.buffer.props.text = text
 
     def on_lsp_notification(self, method: str, params) -> None:
         match method:
@@ -325,7 +337,12 @@ class PyroseWindow(Adw.ApplicationWindow):
         self.save_buffer()
 
     def save_buffer(self):
-        if self.code_view.buffer.get_modified():
+        if not self.code_view.buffer.get_modified():
+            return
+        text = self.code_view.buffer.props.text
+        if self.restore_session:
             with open(self.buffer_file, "w") as f:
-                f.write(self.code_view.buffer.props.text)
-            self.code_view.buffer.set_modified(False)
+                f.write(text)
+        else:
+            self.session_buffers[self.buffer_file] = text
+        self.code_view.buffer.set_modified(False)

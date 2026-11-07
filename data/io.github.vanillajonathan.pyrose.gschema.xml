@@ -6,5 +6,10 @@
 			<summary>The PYTHONPATH environment variable</summary>
 			<description>Augment the default search path for module files.</description>
 		</key>
+		<key name="restore-session" type="b">
+			<default>true</default>
+			<summary>Restore session</summary>
+			<description>Keep the code from the previous session when PyRose starts.</description>
+		</key>
 	</schema>
 </schemalist>

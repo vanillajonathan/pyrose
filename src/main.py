@@ -17,7 +17,7 @@ from .window import PyroseWindow
 gi.require_version("Adw", "1")
 gi.require_version("Gdk", "4.0")
 gi.require_version("Gtk", "4.0")
-from gi.repository import Adw, Gdk, Gio, Gtk
+from gi.repository import Adw, Gdk, Gio, GLib, Gtk
 
 
 class PyroseApplication(Adw.Application):
@@ -122,7 +122,9 @@ class PyroseApplication(Adw.Application):
 
     def on_open_folder_action(self, widget, _):
         """Callback for the app.open-folder action."""
-        path = os.environ.get("XDG_STATE_HOME", ".pyrose")
+        path = os.environ.get(
+            "XDG_STATE_HOME", os.path.join(GLib.get_user_state_dir(), "pyrose")
+        )
         file: Gio.File = Gio.File.new_for_path(path)
         Gtk.FileLauncher.new(file).launch()
 
