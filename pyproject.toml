@@ -5,9 +5,9 @@ description = "Playground for programmers"
 readme = "README.md"
 license = "MIT"
 keywords = ["tools"]
-requires-python = ">=3.13"
+requires-python = ">=3.14"
 dependencies = [
-    "lsp-types>=0.16.0",
+    "lsp-types>=0.26.0",
 ]
 
 classifiers = [
@@ -24,7 +24,15 @@ classifiers = [
 
 [dependency-groups]
 dev = [
-    "pygobject-stubs>=2.17.0",
+    "pygobject-stubs>=2.17.0,<2.18",  # 2.18+ mistypes @GObject.Signal(...) and View.get_vadjustment()
+    "pyrefly>=1.4.1",
+    "ruff>=0.17.4",
 ]
 
 [tool.pyrefly]
+project-includes = ["src"]
+
+[tool.uv]
+# The app runs against the GNOME runtime's PyGObject; the venv only needs the
+# .pyi stubs, so skip compiling PyGObject/pycairo (needs cairo dev headers).
+override-dependencies = ["pygobject; sys_platform == 'never'"]
