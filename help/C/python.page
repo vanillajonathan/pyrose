@@ -10,17 +10,10 @@
   <note style="tip">
     <title>LSP</title>
     <p>
-      It is recommend that you install <link href="https://pyrefly.org/">Pyrefly</link>, a LSP client for Python.
-      Place the <cmd>pyrefly</cmd> binary in your <file>.local/bin/</file> directory.
+      PyRose includes <link href="https://pyrefly.org/">Pyrefly</link>, a language server for Python that provides code completion, hover information and diagnostics.
     </p>
     <p>
-      Install using the command: <cmd>uv tool install pyrefly</cmd>.
-    </p>
-    <p>
-      If you have the VS Code extension installed you can find the <cmd>pyrefly</cmd> binary in the <file>.vscode/extensions/meta.pyrefly-<em>[version]</em>-linux-x64</file> directory.
-    </p>
-    <p>
-      You can download the binary by running <cmd>pip3 download pyrefly</cmd> and extract the file <file>.whl</file> which is a ZIP file.
+      To use a different version, place a <cmd>pyrefly</cmd> binary in your <file>.local/bin/</file> directory. It is used instead of the included one.
     </p>
   </note>
 
