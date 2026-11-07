@@ -4,19 +4,31 @@ on:
   pull_request:
 name: CI
 jobs:
+  lint:
+    name: "Lint & type check"
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v7
+    - uses: astral-sh/setup-uv@v10.3.3
+    # Versions of ruff, pyrefly and pygobject-stubs come from uv.lock,
+    # so CI matches local runs.
+    - run: uv sync --locked
+    - run: uv run ruff check --output-format=github
+    - run: uv run ruff format --check
+    - run: uv run pyrefly check --output-format=full-text-with-github
+
   flatpak:
     name: "Flatpak"
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/flathub-infra/flatpak-github-actions:gnome-48
+      image: ghcr.io/flathub-infra/flatpak-github-actions:gnome-51
       options: --privileged
     steps:
-    - uses: actions/checkout@v5
-      with:
-        submodules: 'recursive'
-    - uses: astral-sh/ruff-action@v3
-    - uses: flatpak/flatpak-github-actions/flatpak-builder@v6.5
+    - uses: actions/checkout@v7
+    - uses: flatpak/flatpak-github-actions/flatpak-builder@v6.8
       with:
         bundle: pyrose.flatpak
         manifest-path: io.github.vanillajonathan.pyrose.json
-        cache-key: flatpak-builder-${{ github.sha }}
+        # Key on the dependency modules so the ~15 min Pyrefly build is
+        # reused until a module changes (github.sha never hit the cache).
+        cache-key: flatpak-builder-${{ hashFiles('flatpak/*.json') }}
