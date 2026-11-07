@@ -1,9 +1,10 @@
 import asyncio
-import lsp_types as lsp
-
 from gettext import gettext as _
+
+import lsp_types as lsp
 from gi.repository import Gio, GObject, Gtk, GtkSource
 from gi.repository.GtkSource import CompletionActivation
+
 from .lsp_client import LspClient
 from .pango_utils import markdown_to_pango
 
@@ -25,11 +26,9 @@ class CompletionProposal(GObject.Object, GtkSource.CompletionProposal):
 
     def is_deprecated(self) -> bool:
         """Whether the completion item is deprecated."""
-        if lsp.CompletionItemTag.Deprecated in self.item.get("tags", []):
-            return True
-        if self.item.get("deprecated"):
-            return True
-        return False
+        return lsp.CompletionItemTag.Deprecated in self.item.get("tags", []) or bool(
+            self.item.get("deprecated")
+        )
 
 
 class FilterData:
@@ -68,15 +67,13 @@ class CompletionProvider(GObject.GObject, GtkSource.CompletionProvider):
         proposal: CompletionProposal,
         cell: GtkSource.CompletionCell,
     ) -> None:
-        language = ""
-        if language := context.get_language():
-            language = language.props.id
+        source_language = context.get_language()
+        language = source_language.props.id if source_language else ""
 
         if cell.props.column == GtkSource.CompletionColumn.ICON:
             self._set_icon(cell, proposal, language)
         elif cell.props.column == GtkSource.CompletionColumn.BEFORE:
             cell.set_text(self._get_text(proposal.kind))
-            pass
         elif cell.props.column == GtkSource.CompletionColumn.TYPED_TEXT:
             if proposal.is_deprecated():
                 cell.set_markup(f"<s>{proposal.text}</s>")
@@ -178,7 +175,7 @@ class CompletionProvider(GObject.GObject, GtkSource.CompletionProvider):
         cell.set_css_classes(["cell", "icon", css_class])
         cell.set_icon_name("circle-outline-thick-symbolic")
 
-    def _get_text(self, kind: int) -> str:
+    def _get_text(self, kind: int | None) -> str:
         match kind:
             case lsp.CompletionItemKind.Text.value:
                 return "Text"
@@ -263,7 +260,7 @@ class CompletionProvider(GObject.GObject, GtkSource.CompletionProvider):
 
         activation = context.get_activation()
         if activation == CompletionActivation.INTERACTIVE:
-            success, begin, end = context.get_bounds()
+            success, _begin, end = context.get_bounds()
             if success and end.backward_char():
                 ch = end.get_char()
                 if ch == "." or ch == "(":

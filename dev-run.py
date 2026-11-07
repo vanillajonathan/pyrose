@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import os
 import subprocess
 
@@ -22,5 +23,6 @@ subprocess.run(
         "--env=AT_SPI_BUS_ADDRESS=unix:path=/run/flatpak/at-spi-bus",
         "build-dir",
         "pyrose",
-    ]
+    ],
+    check=False,
 )

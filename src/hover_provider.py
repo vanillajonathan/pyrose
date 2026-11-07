@@ -1,8 +1,10 @@
 import asyncio
+
 import lsp_types as lsp
+from gi.repository import GObject, Gtk, GtkSource
+
 from .lsp_client import LspClient
 from .pango_utils import markdown_to_pango
-from gi.repository import GObject, Gtk, GtkSource
 
 
 class HoverProvider(GObject.GObject, GtkSource.HoverProvider):

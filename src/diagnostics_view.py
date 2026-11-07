@@ -1,7 +1,7 @@
 import gi
 
 gi.require_version("Gtk", "4.0")
-from gi.repository import Gio, Gtk, GObject  # noqa: E402
+from gi.repository import Gio, GObject, Gtk
 
 
 @Gtk.Template(resource_path="/io/github/vanillajonathan/pyrose/diagnostics_view.ui")
@@ -26,7 +26,7 @@ class DiagnosticsView(Gtk.Widget):
 class DiagnosticMessage(GObject.Object):
     __gtype_name__ = "DiagnosticMessage"
 
-    css_classes: str = GObject.Property(type=GObject.Strv)  # type: ignore
+    css_classes: list[str] = GObject.Property(type=GObject.Strv)  # type: ignore
     icon_name: str = GObject.Property(type=str)  # type: ignore
     message: str = GObject.Property(type=str)  # type: ignore
 
@@ -45,6 +45,9 @@ class DiagnosticMessage(GObject.Object):
                 icon_name = "info-outline-symbolic"
             case 4:
                 css_class = "success"
+                icon_name = "info-outline-symbolic"
+            case _:
+                css_class = "accent"
                 icon_name = "info-outline-symbolic"
 
         self.css_classes = [css_class]

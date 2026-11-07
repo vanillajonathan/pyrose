@@ -1,6 +1,7 @@
 import os
 import platform
 import subprocess
+
 import gi
 import lsp_types as lsp
 
@@ -9,7 +10,7 @@ gi.require_version("Gdk", "4.0")
 gi.require_version("Gtk", "4.0")
 gi.require_version("GtkSource", "5")
 gi.require_version("Vte", "3.91")
-from gi.repository import Adw, Gtk, GtkSource, GLib, Vte  # noqa: E402
+from gi.repository import Adw, GLib, Gtk, GtkSource, Vte
 
 
 def get_debug_info(version, settings) -> str:
@@ -33,7 +34,9 @@ def get_debug_info(version, settings) -> str:
     debug_info += f"Python {platform.python_version()}\n"
 
     try:
-        result = subprocess.run(["pyrefly", "--version"], capture_output=True)
+        result = subprocess.run(
+            ["pyrefly", "--version"], capture_output=True, check=False
+        )
         debug_info += result.stdout.decode() + "\n\n"
     except FileNotFoundError:
         debug_info += "The Python LSP server Pyrefly was not found.\n\n"

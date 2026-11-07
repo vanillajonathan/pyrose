@@ -2,13 +2,13 @@ import asyncio
 import os
 import re
 import signal
-import gi
-
 from asyncio import Task
+
+import gi
 
 gi.require_version("Gtk", "4.0")
 gi.require_version("Vte", "3.91")
-from gi.repository import Gio, GLib, Gtk, GObject, Vte  # noqa: E402
+from gi.repository import Gio, GLib, GObject, Gtk, Vte
 
 
 @Gtk.Template(resource_path="/io/github/vanillajonathan/pyrose/terminal.ui")
@@ -51,18 +51,18 @@ class Terminal(Gtk.Widget):
             action.connect("activate", callback)
             action_group.add_action(action)
 
-        action_group.lookup_action("copy").set_enabled(False)
+        copy_action = action_group.lookup_action("copy")
+        assert isinstance(copy_action, Gio.SimpleAction)
+        copy_action.set_enabled(False)
         self.action_group = action_group
 
     @GObject.Signal
     def bell(self):
         """Called every time the bell signal is emitted."""
-        pass
 
     @GObject.Signal(flags=GObject.SignalFlags.RUN_LAST, arg_types=(int,))
     def child_exited(self, exit_status: int):
         """Called every time the child-exited signal is emitted."""
-        pass
 
     @Gtk.Template.Callback()
     def on_bell(self, terminal: Vte.Terminal) -> None:
@@ -101,7 +101,9 @@ class Terminal(Gtk.Widget):
     @Gtk.Template.Callback()
     def on_selection_changed(self, terminal: Vte.Terminal) -> None:
         has_selection = terminal.get_has_selection()
-        self.action_group.lookup_action("copy").set_enabled(has_selection)
+        copy_action = self.action_group.lookup_action("copy")
+        assert isinstance(copy_action, Gio.SimpleAction)
+        copy_action.set_enabled(has_selection)
 
     def show_search(self, action, parameter):
         self.search_revealer.set_reveal_child(True)
@@ -137,8 +139,9 @@ class Terminal(Gtk.Widget):
             [],  # envv
             GLib.SpawnFlags.DEFAULT,  # spawn_flags
             None,  # child_setup
-            None,  # child_setup action
-            -1,  # timeout
+            # The stubs omit child_setup_data, shifting the next params by one.
+            None,  # child_setup_data  # pyrefly: ignore[bad-argument-type]
+            -1,  # timeout  # pyrefly: ignore[bad-argument-type]
             None,  # cancellable
             spawn_callback,  # callback for when process finishes
             (),  # user_data for callback

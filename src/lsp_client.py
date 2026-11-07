@@ -1,16 +1,17 @@
 # https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/
 
-from asyncio import Future, Task
-from asyncio.streams import StreamReader, StreamWriter
-from asyncio.subprocess import Process
-from collections.abc import AsyncGenerator, Callable, Coroutine, Mapping
-from typing import Any
 import asyncio
 
 # import difflib
 import json
 import logging
 import uuid
+from asyncio import Future, Task
+from asyncio.streams import StreamReader, StreamWriter
+from asyncio.subprocess import Process
+from collections.abc import AsyncGenerator, Callable, Mapping
+from typing import Any
+
 import lsp_types as lsp
 
 logger = logging.getLogger(__name__)
@@ -31,7 +32,7 @@ class JsonRpcDispatcher:
         self._callbacks: dict[int, Future] = {}
         self._reader: StreamReader = reader
         self._writer: StreamWriter = writer
-        self._read_loop_task: Task | None = None
+        self._read_loop_task: Task[None] | None = None
 
     async def start(self) -> None:
         """Start listening for messages from the JSON-RPC server."""
@@ -41,7 +42,7 @@ class JsonRpcDispatcher:
         """Stop processing messages from the JSON-RPC server."""
         if self._read_loop_task:
             self._read_loop_task.cancel()
-        for _, callback in self._callbacks.items():
+        for callback in self._callbacks.values():
             callback.cancel()
         self._callback_id = 1
         self._callbacks.clear()
@@ -117,9 +118,8 @@ class JsonRpcDispatcher:
         except ConnectionResetError:
             if self.on_close:
                 self.on_close()
-        return
 
-    async def _read_loop(self) -> Coroutine[None, None, None]:
+    async def _read_loop(self) -> None:
         async for message in self._read_messages():
             if message.get("jsonrpc") != "2.0":
                 logger.error("Invalid JSON-RPC version")
@@ -140,7 +140,6 @@ class JsonRpcDispatcher:
             else:
                 if self.on_notification is not None:
                     self.on_notification(message["method"], message.get("params"))
-        return
 
     async def _read_messages(self) -> AsyncGenerator[Any]:
         while not self._reader.at_eof():
@@ -151,15 +150,14 @@ class JsonRpcDispatcher:
                     break
                 name, value = line.decode("ascii").rstrip().split(":")
                 headers[name] = value.lstrip()
-            if value := headers.get("Content-Type"):
-                if "utf-8" not in value:
-                    logger.error("Unexpected Content-Type header")
-                    await self.send_error(
-                        lsp.ErrorCodes.InvalidRequest,
-                        "Unexpected Content-Type header",
-                        None,
-                    )
-                    continue
+            if (value := headers.get("Content-Type")) and "utf-8" not in value:
+                logger.error("Unexpected Content-Type header")
+                await self.send_error(
+                    lsp.ErrorCodes.InvalidRequest,
+                    "Unexpected Content-Type header",
+                    None,
+                )
+                continue
             if value := headers.get("Content-Length"):
                 content_length = int(value)
                 message = await self._reader.readexactly(content_length)
@@ -346,7 +344,7 @@ def get_lazy_cheat_diff(
     return differences
 
 
-async def start_lsp_process(program, args: list[str]) -> Process:
+async def start_lsp_process(program: str, args: list[str]) -> Process:
     """Start a LSP process.
 
     Args:
