@@ -342,13 +342,18 @@ class CodeView(Gtk.Widget):
             self.buffer.apply_tag_by_name("highlight", start_iter, end_iter)
 
     def goto_line(self, widget, action, parameter):
-        line, column = 0, 0
+        text = self.goto_line_entry.get_text().strip()
+        if not text:
+            self.goto_line_revealer.set_reveal_child(False)
+            self.sourceview.grab_focus()
+            return
+        line_text, _, column_text = text.partition(":")
         try:
-            line, column = self.goto_line_entry.get_text().split(":")
+            line = int(line_text)
+            column = int(column_text) if column_text else 0
         except ValueError:
-            line = self.goto_line_entry.get_text()
-        line = int(line)
-        column = int(column)
+            self.goto_line_entry.error_bell()
+            return
         found, textiter = self.buffer.get_iter_at_line(line - 1)
         if found:
             if column and textiter.get_chars_in_line() > column:
