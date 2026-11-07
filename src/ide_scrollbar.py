@@ -2,7 +2,7 @@
 import gi
 
 gi.require_version("Gtk", "4.0")
-from gi.repository import Adw, Gtk, GtkSource, Gdk, Graphene, GObject  # noqa: E402
+from gi.repository import Adw, Gdk, GObject, Graphene, Gtk, GtkSource
 
 SCROLLBAR_H_MARGIN: int = 7
 SCROLLBAR_V_MARGIN: int = 6
@@ -80,7 +80,10 @@ class IdeScrollbar(Gtk.Widget):
         total_lines = self._buffer.get_line_count()
         width = self.get_width()
         height = self.get_height()
-        view_height = self._view.get_vadjustment().get_upper()
+        vadjustment = self._view.get_vadjustment()
+        if vadjustment is None or total_lines == 0:
+            return
+        view_height = vadjustment.get_upper()
         ratio = height / view_height
         top_margin = ratio * self._view.get_top_margin() + SCROLLBAR_V_MARGIN
         bottom_margin = ratio * self._view.get_bottom_margin() + SCROLLBAR_V_MARGIN
@@ -117,6 +120,8 @@ class IdeScrollbar(Gtk.Widget):
                 color = self._information_color
             case 4:
                 color = self._hint_color
+            case _:
+                color = None
 
         if color and end_y > start_y:
             height = max(end_y - start_y, 2)

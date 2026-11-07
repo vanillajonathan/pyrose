@@ -1,13 +1,15 @@
+from typing import ClassVar
+
 import gi
 
 gi.require_version("Gtk", "4.0")
-from gi.repository import Gtk, GObject  # noqa: E402
+from gi.repository import GObject, Gtk
 
 
 @Gtk.Template(resource_path="/io/github/vanillajonathan/pyrose/symbol_chooser.ui")
 class SymbolChooser(Gtk.Popover):
     __gtype_name__ = "SymbolChooser"
-    __gsignals__ = {
+    __gsignals__: ClassVar[dict] = {
         "symbol-picked": (
             GObject.SIGNAL_RUN_LAST | GObject.SIGNAL_ACTION,
             None,
@@ -25,7 +27,9 @@ class SymbolChooser(Gtk.Popover):
 
     @Gtk.Template.Callback()
     def on_symbol_activated(self, flowbox: Gtk.FlowBox, item: Gtk.FlowBoxChild):
-        symbol = item.get_child().get_label()
+        label = item.get_child()
+        assert isinstance(label, Gtk.Label)
+        symbol = label.get_label()
         self.emit("symbol-picked", symbol)
         self.popdown()
 

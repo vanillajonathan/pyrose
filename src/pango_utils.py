@@ -11,6 +11,7 @@ def markdown_to_pango(markdown: str) -> str:
     pango = ""
     code_block = ""
     in_code_block = False
+    language = ""
 
     for line in lines:
         line = line.replace("&nbsp;", " ")
@@ -26,7 +27,7 @@ def markdown_to_pango(markdown: str) -> str:
             if code_block:
                 pango += f"<tt>{syntax_highlight(language, code_block)}</tt>"
                 code_block = ""
-                language = None
+                language = ""
 
         if line.startswith("###"):
             line = f"<span size='large'>{line.lstrip('# ')}</span>"

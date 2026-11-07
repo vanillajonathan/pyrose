@@ -1,10 +1,11 @@
-from typing import Final
 import os
+from typing import Final
+
 import gi
 
 gi.require_version("Adw", "1")
 gi.require_version("Gtk", "4.0")
-from gi.repository import Adw, Gtk, Gio  # noqa: E402
+from gi.repository import Adw, Gio, Gtk
 
 SETTING_PYTHON_PATH: Final[str] = "python-path"
 

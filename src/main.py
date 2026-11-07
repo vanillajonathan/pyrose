@@ -4,10 +4,11 @@ import asyncio
 import os
 import shutil
 import sys
-import gi
-
 from gettext import gettext as _
+
+import gi
 from gi.events import GLibEventLoopPolicy  # pyrefly: ignore[import-error]
+
 from .helpers import get_debug_info
 from .preferences import PreferencesDialog
 from .shared import Lang
@@ -16,7 +17,7 @@ from .window import PyroseWindow
 gi.require_version("Adw", "1")
 gi.require_version("Gdk", "4.0")
 gi.require_version("Gtk", "4.0")
-from gi.repository import Adw, Gdk, Gio, Gtk  # noqa: E402
+from gi.repository import Adw, Gdk, Gio, Gtk
 
 
 class PyroseApplication(Adw.Application):
@@ -31,6 +32,7 @@ class PyroseApplication(Adw.Application):
             resource_base_path="/io/github/vanillajonathan/pyrose",
             version=version,
         )
+        # pyrefly: ignore[bad-argument-type]
         asyncio.set_event_loop_policy(GLibEventLoopPolicy())
 
         self.create_action("quit", lambda *_: self.quit(), ["<primary>q"])

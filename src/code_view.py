@@ -1,14 +1,15 @@
 import asyncio
 import os
-import gi
-
 from asyncio import Task
+
+import gi
 from lsp_types import (
     DiagnosticSeverity,
     DiagnosticTag,
     DocumentHighlight,
     PublishDiagnosticsParams,
 )
+
 from .ide_scrollbar import IdeScrollbar
 from .shared import Lang
 from .symbol_chooser import SymbolChooser
@@ -17,7 +18,7 @@ gi.require_version("Adw", "1")
 gi.require_version("Gdk", "4.0")
 gi.require_version("Gtk", "4.0")
 gi.require_version("GtkSource", "5")
-from gi.repository import Adw, Gdk, Gio, GObject, Gtk, GtkSource  # noqa: E402
+from gi.repository import Adw, Gdk, Gio, GObject, Gtk, GtkSource
 
 
 @Gtk.Template(resource_path="/io/github/vanillajonathan/pyrose/code_view.ui")
@@ -138,19 +139,16 @@ class CodeView(Gtk.Widget):
     @GObject.Signal(flags=GObject.SignalFlags.RUN_LAST, arg_types=(GtkSource.Buffer,))
     def changed(self, buffer: GtkSource.Buffer):
         """Called every time the changed signal is emitted."""
-        pass
 
     @GObject.Signal(flags=GObject.SignalFlags.RUN_LAST, arg_types=(GtkSource.Buffer,))
     def cursor_moved(self, buffer: GtkSource.Buffer):
         """Called every time the cursor-moved signal is emitted."""
-        pass
 
     @GObject.Signal(
         flags=GObject.SignalFlags.RUN_LAST, arg_types=(Gtk.DropTarget, Gio.File)
     )
     def drop(self, target: Gtk.DropTarget, value: Gio.File):
         """Called every time the drop signal is emitted."""
-        pass
 
     @Gtk.Template.Callback()
     def on_droptarget_drop(
@@ -223,7 +221,7 @@ class CodeView(Gtk.Widget):
 
     @Gtk.Template.Callback()
     def on_goto_line_entry_activate(self, entry: Gtk.Entry):
-        self.goto_line(None, None)
+        self.goto_line(None, None, None)
 
     @Gtk.Template.Callback()
     def on_search_entry_activate(self, entry: Gtk.Entry):
@@ -263,7 +261,7 @@ class CodeView(Gtk.Widget):
             self.action_set_enabled("editor.search-next", True)
             self.action_set_enabled("editor.search-prev", True)
             cursor_iter = self.buffer.get_iter_at_mark(self.buffer.get_insert())
-            found, start_iter, end_iter, wrapped = self.search_context.forward(
+            found, start_iter, end_iter, _wrapped = self.search_context.forward(
                 cursor_iter
             )
             if found:
@@ -385,7 +383,7 @@ class CodeView(Gtk.Widget):
         if not self.search_context:
             return
         current_pos_iter = self.buffer.get_iter_at_mark(self.buffer.get_insert())
-        match, start, end, wrapped = self.search_context.backward(current_pos_iter)
+        match, start, end, _wrapped = self.search_context.backward(current_pos_iter)
         if match:
             self.buffer.select_range(start, end)
             self.buffer.place_cursor(start)
@@ -395,7 +393,7 @@ class CodeView(Gtk.Widget):
         if not self.search_context:
             return
         current_pos_iter = self.buffer.get_iter_at_mark(self.buffer.get_insert())
-        match, start, end, wrapped = self.search_context.forward(current_pos_iter)
+        match, start, end, _wrapped = self.search_context.forward(current_pos_iter)
         if match:
             self.buffer.select_range(start, end)
             self.buffer.place_cursor(end)
